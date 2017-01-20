@@ -2,6 +2,7 @@ package edu.kit.informatik.pcc.webinterface.gui;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Label;
@@ -21,21 +22,44 @@ import javax.servlet.annotation.WebServlet;
 @Theme("valo")
 public class MyUI extends UI {
 
+    //attributes
     private VerticalLayout background;
     private VerticalLayout menuArea;
     private VerticalLayout contentArea;
     private Menu menu;
+    static Navigator navigator;
 
-    @Override
-    protected void init(VaadinRequest vaadinRequest) {
-        background = new VerticalLayout();
-        background.addComponent(new Label("Helle World"));
-        setContent(background);
-
-    }
-
+    /**
+     *  The Servlet in which the site runs.
+     */
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
+
+
+    //methods
+    /**
+     * This method is called whenever somebody openes the UI, we do the initialization of
+     * our prameters here.
+     *
+     * @param vaadinRequest the request
+     */
+    @Override
+    protected void init(VaadinRequest vaadinRequest) {
+        background = new VerticalLayout();
+        menuArea = new VerticalLayout();
+        contentArea = new VerticalLayout();
+        menu = new Menu(this);
+        navigator = new Navigator(this, contentArea);
+        navigator.addView(LoginView.viewID, new LoginView());
+        navigator.addView(AccountView.viewID, new AccountView());
+        background.addComponent(contentArea);
+        navigator.navigateTo(LoginView.viewID);
+
+
+        setContent(background);
+    }
+
+
 }
