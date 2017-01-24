@@ -7,7 +7,7 @@ package edu.kit.informatik.pcc.webinterface.datamanagement;
 public class AccountDataManager {
 
     //attributes
-    public static Account account = null;
+    private static Account account = null;
 
     //methods
 
@@ -87,6 +87,10 @@ public class AccountDataManager {
      */
     private static void sendMail(String mail) {
 
+    }
+
+    public static Account getAccount() {
+        return account;
     }
 
 }

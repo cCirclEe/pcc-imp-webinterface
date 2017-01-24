@@ -6,6 +6,8 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.navigator.View;
+import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
+import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
 
 import java.util.ResourceBundle;
 
@@ -22,7 +24,7 @@ public class LoginView extends VerticalLayout implements View {
     private Button registerButton;
 
     //Constructor
-    public LoginView() {
+    public LoginView(MyUI ui) {
         //initialization
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
         mailField = new TextField(messages.getString(viewID + "mailField"));
@@ -30,11 +32,13 @@ public class LoginView extends VerticalLayout implements View {
         loginButton = new Button(messages.getString(viewID + "loginButton"));
         registerButton = new Button(messages.getString(viewID + "registerButton"));
 
+
         loginButton.addClickListener(
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-
+                        AccountDataManager.createAccount(mailField.getValue(),passwordField.getValue());
+                        ui.login();
                     }
                 }
         );
