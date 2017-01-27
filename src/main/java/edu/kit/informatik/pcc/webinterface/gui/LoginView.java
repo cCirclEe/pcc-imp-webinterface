@@ -4,6 +4,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.TextField;
 import com.vaadin.navigator.View;
 import de.steinwedel.messagebox.MessageBox;
@@ -37,25 +38,19 @@ public class LoginView extends VerticalLayout implements View {
         registerButton = new Button(messages.getString(viewID + "registerButton"));
 
         loginButton.addClickListener(
-                new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        if (AccountDataManager.authenticateAccount(mailField.getValue(), passwordField.getValue())) {
-                            ui.login();
-                        }
+                (ClickListener) event -> {
+                    if (AccountDataManager.authenticateAccount(mailField.getValue(), passwordField.getValue())) {
+                        ui.login();
                     }
                 }
         );
 
         registerButton.addClickListener(
-                new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        if (AccountDataManager.createAccount(mailField.getValue(),passwordField.getValue())) {
-                            MessageBox.createInfo()
-                                    .withMessage(messages.getString(viewID + "registerInfo"))
-                                    .open();
-                        }
+                (ClickListener) event -> {
+                    if (AccountDataManager.createAccount(mailField.getValue(),passwordField.getValue())) {
+                        MessageBox.createInfo()
+                                .withMessage(messages.getString(viewID + "registerInfo"))
+                                .open();
                     }
                 }
         );

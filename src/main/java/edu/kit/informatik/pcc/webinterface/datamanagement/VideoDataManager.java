@@ -1,8 +1,12 @@
 package edu.kit.informatik.pcc.webinterface.datamanagement;
 
+import com.vaadin.server.FileDownloader;
 import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -25,28 +29,20 @@ public class VideoDataManager {
      */
     public static void downloadVideo(int videoID) {
         String ret = "";
+        File file = new File("");
 
-        ret = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
+        file = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
 
-        //TODO implement switch case for video download.
-        switch (ret) {
-            case "WRONG ACCOUNT":
-                MessageBox.createInfo()
-                        .withMessage(messages.getString(""))
-                        .open();
-            case "FAILURE":
-                MessageBox.createInfo()
-                        .withMessage(messages.getString(""))
-                        .open();
-            case "SUCCESS":
-                MessageBox.createInfo()
-                        .withMessage(messages.getString(""))
-                        .open();
-            default:
-                MessageBox.createInfo()
-                        .withMessage(messages.getString(""))
-                        .open();
+        if (file == null) {
+            MessageBox.createInfo()
+                    .withMessage(messages.getString("videoDownloadFail"))
+                    .open();
+            return;
         }
+
+        //TODO: implement download !!!!
+
+        FileDownloader fileDownloader = new FileDownloader(null);
     }
 
     /**
@@ -98,7 +94,7 @@ public class VideoDataManager {
      */
     private static String getVideosFromServer() {
         String ret = "";
-        ret = ServerProxy.getVideosbyAccount(AccountDataManager.getAccount());
+        ret = ServerProxy.getVideosByAccount(AccountDataManager.getAccount());
 
 
         switch (ret) {
@@ -125,7 +121,20 @@ public class VideoDataManager {
      *
      */
     private static LinkedList createVideoList(String videos) {
-        LinkedList videoList = new LinkedList();
+        LinkedList<Video> videoList = new LinkedList();
+
+        JSONArray jsonArray = new JSONArray(videos);
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            JSONObject videoInfo = jsonObject.getJSONObject("videoInfo");
+            String name = videoInfo.getString("name");
+            int id = Integer.parseInt(videoInfo.getString("id"));
+
+            Video video = new Video(name, id, null);
+            videoList.add(video);
+        }
+
         return videoList;
     }
 
@@ -178,9 +187,7 @@ public class VideoDataManager {
 
 
     public static LinkedList getVideos() {
-        if (videos == null) {
-            updateVideosAndInfo();
-        }
+        updateVideosAndInfo();
         return videos;
     }
 

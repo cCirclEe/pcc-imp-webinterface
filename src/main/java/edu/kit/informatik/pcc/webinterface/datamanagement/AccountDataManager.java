@@ -13,7 +13,8 @@ import java.util.UUID;
 public class AccountDataManager {
 
     //attributes
-    private static Account account = null;
+    //TODO: not public
+    public static Account account = null;
     private static ResourceBundle messages = ResourceBundle.getBundle("ErrorMessages");
 
     //methods
@@ -69,7 +70,7 @@ public class AccountDataManager {
      * @param password password
      */
     private static void startVerification(String mail, String password, UUID id) {
-        //TODO:
+        //TODO: verification
     }
 
     /**
