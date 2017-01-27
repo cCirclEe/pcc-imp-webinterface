@@ -6,6 +6,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
 
 import java.util.ResourceBundle;
 
@@ -24,7 +25,7 @@ public class AccountView extends VerticalLayout implements View{
     private Button changeButton;
 
     //constructors
-    public AccountView() {
+    public AccountView(MyUI ui) {
         //initialization
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
         mailLabel = new Label(messages.getString(viewID + "mailLabel"));
@@ -37,7 +38,9 @@ public class AccountView extends VerticalLayout implements View{
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-
+                        if (AccountDataManager.changeAccount(passwordField.getValue(), mailChangeField.getValue(), passwordChangeField.getValue())) {
+                            ui.init(null);
+                        }
                     }
                 }
         );
@@ -50,5 +53,6 @@ public class AccountView extends VerticalLayout implements View{
         this.addComponent(mailChangeField);
         this.addComponent(passwordChangeField);
         this.addComponent(passwordField);
+        this.addComponent(changeButton);
     }
 }

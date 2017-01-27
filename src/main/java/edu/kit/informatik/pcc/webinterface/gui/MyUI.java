@@ -6,12 +6,11 @@ import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
+import edu.kit.informatik.pcc.webinterface.datamanagement.Video;
+import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
 import edu.kit.informatik.pcc.webinterface.gui.navigation.Menu;
 
 import javax.servlet.annotation.WebServlet;
@@ -33,6 +32,8 @@ public class MyUI extends UI {
     private VerticalLayout contentArea;
     private Menu menu;
     private Navigator navigator;
+    private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
+    private Boolean firstloggedIn = false;
 
     /**
      *  The Servlet in which the site runs.
@@ -52,34 +53,49 @@ public class MyUI extends UI {
      */
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        // initialze Graphical components
         background = new HorizontalLayout();
         menuArea = new VerticalLayout();
         contentArea = new VerticalLayout();
-        Responsive.makeResponsive(this);
 
-        ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
+        LoginView login = new LoginView(this);
+        background.addComponent(login);
 
-        menu = new Menu(this);
-        menu.addMenuItem(messages.getString(AccountView.viewID), AccountView.viewID);
-
-        navigator = new Navigator(this, contentArea);
-        navigator.addView(LoginView.viewID, new LoginView(this));
-        navigator.addView(AccountView.viewID, new AccountView());
-        this.setNavigator(navigator);
-
-
-        background.addComponent(contentArea);
         setContent(background);
-
-        navigator.navigateTo(LoginView.viewID);
     }
 
     public void login() {
-        menu.addUserMenu(AccountDataManager.getAccount().getMail());
-        menuArea.addComponent(menu);
+        //set User after login and add menu to the view
+        //set up the menu
+        background.removeAllComponents();
+        background.addComponent(contentArea);
+
+        navigator = new Navigator(this, contentArea);
+        navigator.addView(AccountView.viewID, new AccountView(this));
+        navigator.addView(VideoView.viewID, new VideoView());
+        navigator.setErrorView(new VideoView());
+        this.setNavigator(navigator);
+
+        menu = new Menu(this);
+        menu.addMenuItem(messages.getString(AccountView.viewID), AccountView.viewID);
+        menu.addMenuItem(messages.getString(VideoView.viewID), VideoView.viewID);
+        menu.addLogout();
+
         menuArea.setHeight("800px");
+        menuArea.addComponent(menu);
+
+        menu.addUserMenu(AccountDataManager.getAccount().getMail());
+
         background.addComponentAsFirst(menuArea);
-        navigator.navigateTo(AccountView.viewID);
+
+        navigator.navigateTo(VideoView.viewID);
     }
 
+    public void logout() {
+        init(null);
+    }
+
+    public void setFirstloggedIn() {
+        this.firstloggedIn = true;
+    }
 }

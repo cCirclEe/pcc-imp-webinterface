@@ -11,7 +11,7 @@ import com.vaadin.ui.VerticalLayout;
 public class VideoView extends VerticalLayout implements View{
 
     //attributes
-    public static final String viewId = "VideoView";
+    public static final String viewID = "VideoView";
     private VideoTable videoTable;
 
     //constructors

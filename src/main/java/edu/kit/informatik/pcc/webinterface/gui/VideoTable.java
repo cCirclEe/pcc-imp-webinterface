@@ -1,6 +1,7 @@
 package edu.kit.informatik.pcc.webinterface.gui;
 
 import com.vaadin.ui.Table;
+import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
 
 import java.util.LinkedList;
 
@@ -21,7 +22,7 @@ public class VideoTable extends Table {
     }
 
     private void prepareVideos() {
-
+        videos = VideoDataManager.getVideos();
     }
 
     private void prepareButtons() {

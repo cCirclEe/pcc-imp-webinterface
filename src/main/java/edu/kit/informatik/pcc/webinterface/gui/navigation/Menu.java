@@ -1,5 +1,6 @@
 package edu.kit.informatik.pcc.webinterface.gui.navigation;
 
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Responsive;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
@@ -41,6 +42,7 @@ public class Menu extends VerticalLayout {
 
         userMenu.addStyleName("user-menu");
         userItem = userMenu.addItem("", null);
+        userItem.setIcon(FontAwesome.MALE);
 
         this.addComponent(userMenu);
 
@@ -66,5 +68,16 @@ public class Menu extends VerticalLayout {
             return;
         }
         userItem.setText(text);
+    }
+
+    public void addLogout() {
+        Button button = new Button("Logout", new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                ui.logout();
+            }
+        });
+        button.setPrimaryStyleName("valo-menu-item");
+        menuItemsLayout.addComponent(button);
     }
 }

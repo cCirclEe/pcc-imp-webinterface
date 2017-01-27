@@ -6,8 +6,10 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.TextField;
 import com.vaadin.navigator.View;
+import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
+import sun.misc.MessageUtils;
 
 import java.util.ResourceBundle;
 
@@ -22,23 +24,25 @@ public class LoginView extends VerticalLayout implements View {
     private TextField passwordField;
     private Button loginButton;
     private Button registerButton;
+    private MyUI ui;
 
     //Constructor
     public LoginView(MyUI ui) {
         //initialization
+        this.ui = ui;
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
         mailField = new TextField(messages.getString(viewID + "mailField"));
         passwordField = new TextField(messages.getString(viewID + "passwordField"));
         loginButton = new Button(messages.getString(viewID + "loginButton"));
         registerButton = new Button(messages.getString(viewID + "registerButton"));
 
-
         loginButton.addClickListener(
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-                        AccountDataManager.createAccount(mailField.getValue(),passwordField.getValue());
-                        ui.login();
+                        if (AccountDataManager.authenticateAccount(mailField.getValue(), passwordField.getValue())) {
+                            ui.login();
+                        }
                     }
                 }
         );
@@ -47,17 +51,23 @@ public class LoginView extends VerticalLayout implements View {
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
-
+                        if (AccountDataManager.createAccount(mailField.getValue(),passwordField.getValue())) {
+                            MessageBox.createInfo()
+                                    .withMessage(messages.getString(viewID + "registerInfo"))
+                                    .open();
+                        }
                     }
                 }
         );
-    }
 
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
         this.addComponent(mailField);
         this.addComponent(passwordField);
         this.addComponent(loginButton);
         this.addComponent(registerButton);
+    }
+
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+
     }
 }
