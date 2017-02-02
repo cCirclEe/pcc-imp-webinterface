@@ -24,6 +24,8 @@ public class ServerProxy {
     private static final String HOST = "http://laubenstone.de:2222/";
 
     public static String getVideosByAccount(Account a) {
+
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -42,6 +44,8 @@ public class ServerProxy {
     }
 
     public static String videoInfo(int videoID, Account a) {
+        // TODO: String json .... -> a.getAsJson();
+
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -61,6 +65,8 @@ public class ServerProxy {
     }
 
     public static File videoDownload(int videoID, Account a) {
+        // TODO: String json .... -> a.getAsJson();
+
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -89,6 +95,7 @@ public class ServerProxy {
     }
 
     public static String videoDelete(int videoID, Account a) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -113,6 +120,7 @@ public class ServerProxy {
     }
 
     public static String authenticateUser(Account a) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -131,6 +139,7 @@ public class ServerProxy {
     }
 
     public static String createAccount(Account a, UUID id) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -150,6 +159,7 @@ public class ServerProxy {
     }
 
     public static String changeAccount(Account oldAccount, Account newAccount) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -157,7 +167,7 @@ public class ServerProxy {
                 "    \"password\": \""+ oldAccount.getPassword() +"\",\n" +
                 "  }\n" +
                 "}";
-
+        // TODO: New Json = json !!
         String newJson = "{\n" +
                 "  \"account\": {\n" +
                 "    \"mail\": \""+ newAccount.getMail() +"\",\n" +
@@ -176,6 +186,7 @@ public class ServerProxy {
     }
 
     public static String deleteAccount(Account a) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
