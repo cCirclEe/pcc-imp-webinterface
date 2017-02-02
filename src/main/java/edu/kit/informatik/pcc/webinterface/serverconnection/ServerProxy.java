@@ -1,8 +1,6 @@
 package edu.kit.informatik.pcc.webinterface.serverconnection;
 
 import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
-import elemental.json.Json;
-import elemental.json.impl.JsonUtil;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -24,6 +22,8 @@ import java.util.UUID;
 public class ServerProxy {
 
     public static String getVideosByAccount(Account a) {
+
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -42,6 +42,8 @@ public class ServerProxy {
     }
 
     public static String videoInfo(int videoID, Account a) {
+        // TODO: String json .... -> a.getAsJson();
+
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -61,6 +63,8 @@ public class ServerProxy {
     }
 
     public static File videoDownload(int videoID, Account a) {
+        // TODO: String json .... -> a.getAsJson();
+
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -89,6 +93,7 @@ public class ServerProxy {
     }
 
     public static String videoDelete(int videoID, Account a) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -108,6 +113,7 @@ public class ServerProxy {
     }
 
     public static String authenticateUser(Account a) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -126,6 +132,7 @@ public class ServerProxy {
     }
 
     public static String createAccount(Account a, UUID id) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -145,6 +152,7 @@ public class ServerProxy {
     }
 
     public static String changeAccount(Account oldAccount, Account newAccount) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
@@ -152,7 +160,7 @@ public class ServerProxy {
                 "    \"password\": \""+ newAccount.getPassword() +"\",\n" +
                 "  }\n" +
                 "}";
-
+        // TODO: New Json = json !!
         String newJson = "{\n" +
                 "  \"account\": {\n" +
                 "    \"mail\": \""+ oldAccount.getMail() +"\",\n" +
@@ -171,6 +179,7 @@ public class ServerProxy {
     }
 
     public static String deleteAccount(Account a) {
+        // TODO: String json .... -> a.getAsJson();
         //language=JSON
         String json = "{\n" +
                 "  \"account\": {\n" +
