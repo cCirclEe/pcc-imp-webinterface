@@ -1,8 +1,6 @@
 package edu.kit.informatik.pcc.webinterface.serverconnection;
 
 import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
-import elemental.json.Json;
-import elemental.json.impl.JsonUtil;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -23,6 +21,8 @@ import java.util.UUID;
  */
 public class ServerProxy {
 
+    private static final String HOST = "http://laubenstone.de:2222/";
+
     public static String getVideosByAccount(Account a) {
         //language=JSON
         String json = "{\n" +
@@ -34,7 +34,7 @@ public class ServerProxy {
         Form f = new Form();
         f.param("data", json);
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:2222/").path("webservice").path("getVideosByAccount");
+        WebTarget webTarget = client.target(HOST).path("webservice").path("getVideosByAccount");
         System.out.println(webTarget.getUri());
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
 
@@ -53,7 +53,7 @@ public class ServerProxy {
         f.param("data", json);
         f.param("id", Integer.toString(videoID));
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:2222/").path("webservice").path("videoInfo");
+        WebTarget webTarget = client.target(HOST).path("webservice").path("videoInfo");
         System.out.println(webTarget.getUri());
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
 
@@ -72,7 +72,7 @@ public class ServerProxy {
         f.param("data", json);
         f.param("videoId", Integer.toString(videoID));
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:2222/").path("webservice").path("videoDownload");
+        WebTarget webTarget = client.target(HOST).path("webservice").path("videoDownload");
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE),Response.class);
         InputStream inputStream = response.readEntity(InputStream.class);
         File downloadfile = null;
@@ -98,11 +98,16 @@ public class ServerProxy {
                 "}";
         Form f = new Form();
         f.param("data", json);
-        f.param("id", Integer.toString(videoID));
+        String string = Integer.toString(videoID);
+        System.out.println(string);
+        f.param("id", string);
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:2222/").path("webservice").path("videoDelete");
+        WebTarget webTarget = client.target(HOST).path("webservice").path("videoDelete");
         System.out.println(webTarget.getUri());
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+
+        System.out.println(a.getMail());
+        System.out.println(a.getPassword());
 
         return response.readEntity(String.class);
     }
@@ -118,7 +123,7 @@ public class ServerProxy {
         Form f = new Form();
         f.param("data", json);
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:2222/").path("webservice").path("authenticate");
+        WebTarget webTarget = client.target(HOST).path("webservice").path("authenticate");
         System.out.println(webTarget.getUri());
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
 
@@ -137,7 +142,7 @@ public class ServerProxy {
         f.param("data", json);
         f.param("uuid", id.toString());
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:2222/").path("webservice").path("createAccount");
+        WebTarget webTarget = client.target(HOST).path("webservice").path("createAccount");
         System.out.println(webTarget.getUri());
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
 
@@ -149,13 +154,13 @@ public class ServerProxy {
         String json = "{\n" +
                 "  \"account\": {\n" +
                 "    \"mail\": \""+ oldAccount.getMail() +"\",\n" +
-                "    \"password\": \""+ newAccount.getPassword() +"\",\n" +
+                "    \"password\": \""+ oldAccount.getPassword() +"\",\n" +
                 "  }\n" +
                 "}";
 
         String newJson = "{\n" +
                 "  \"account\": {\n" +
-                "    \"mail\": \""+ oldAccount.getMail() +"\",\n" +
+                "    \"mail\": \""+ newAccount.getMail() +"\",\n" +
                 "    \"password\": \""+ newAccount.getPassword() +"\",\n" +
                 "  }\n" +
                 "}";
@@ -163,7 +168,7 @@ public class ServerProxy {
         f.param("data", json);
         f.param("newData", newJson);
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:2222/").path("webservice").path("changeAccount");
+        WebTarget webTarget = client.target(HOST).path("webservice").path("changeAccount");
         System.out.println(webTarget.getUri());
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
 
@@ -181,7 +186,7 @@ public class ServerProxy {
         Form f = new Form();
         f.param("data", json);
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target("http://localhost:2222/").path("webservice").path("delteAccount");
+        WebTarget webTarget = client.target(HOST).path("webservice").path("delteAccount");
         System.out.println(webTarget.getUri());
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
 

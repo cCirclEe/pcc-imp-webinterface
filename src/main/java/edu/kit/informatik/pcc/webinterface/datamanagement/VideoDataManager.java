@@ -1,6 +1,8 @@
 package edu.kit.informatik.pcc.webinterface.datamanagement;
 
 import com.vaadin.server.FileDownloader;
+import com.vaadin.server.FileResource;
+import com.vaadin.ui.Button;
 import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
 import org.json.JSONArray;
@@ -41,8 +43,12 @@ public class VideoDataManager {
         }
 
         //TODO: implement download !!!!
+        FileResource resource = new FileResource(file);
 
-        FileDownloader fileDownloader = new FileDownloader(null);
+        FileDownloader fileDownloader = new FileDownloader(resource);
+        Button button = new Button();
+        fileDownloader.extend(button);
+        button.click();
     }
 
     /**
@@ -54,20 +60,24 @@ public class VideoDataManager {
         String ret = "";
 
         ret = ServerProxy.videoDelete(videoID,AccountDataManager.getAccount());
+        System.out.println(ret);
 
         switch (ret) {
             case "WRONG ACCOUNT":
                 MessageBox.createInfo()
                         .withMessage(messages.getString("videoDeleteFail"))
                         .open();
+                return;
             case "FAILURE":
                 MessageBox.createInfo()
                         .withMessage(messages.getString("videoDeleteFail"))
                         .open();
+                return;
             case "SUCCESS":
                 MessageBox.createInfo()
                         .withMessage(messages.getString("videoDeleted"))
                         .open();
+                break;
             default:
                 MessageBox.createInfo()
                         .withMessage(messages.getString("videoDeleteFail"))
@@ -95,7 +105,7 @@ public class VideoDataManager {
     private static String getVideosFromServer() {
         String ret = "";
         ret = ServerProxy.getVideosByAccount(AccountDataManager.getAccount());
-
+        System.out.println(ret);
 
         switch (ret) {
             case "WRONG ACCOUNT":
@@ -131,7 +141,7 @@ public class VideoDataManager {
             String name = videoInfo.getString("name");
             int id = Integer.parseInt(videoInfo.getString("id"));
 
-            Video video = new Video(name, id, null);
+            Video video = new Video(name, id, "");
             videoList.add(video);
         }
 
@@ -143,6 +153,7 @@ public class VideoDataManager {
      *
      */
     private static void addInfoToVideoList() {
+
         if (videos == null) {
             MessageBox.createInfo()
                     .withMessage(messages.getString("infoFail"))
@@ -151,8 +162,11 @@ public class VideoDataManager {
 
         for (Video v: videos) {
             String info = getMetaInfFromServer(v.getId());
+            System.out.println(info);
             if (info != null) {
                 v.setInfo(info);
+            } else {
+                v.setInfo("asdf");
             }
         }
     }
@@ -166,11 +180,11 @@ public class VideoDataManager {
         String ret = "";
 
         ret = ServerProxy.videoInfo(videoID, AccountDataManager.getAccount());
-
+        System.out.println(ret);
         switch (ret) {
             case "WRONG ACCOUNT":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("nfoFail"))
+                        .withMessage(messages.getString("infoFail"))
                         .open();
                 break;
             case "FAILURE":

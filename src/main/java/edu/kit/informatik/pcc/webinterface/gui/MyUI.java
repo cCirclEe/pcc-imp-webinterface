@@ -3,14 +3,12 @@ package edu.kit.informatik.pcc.webinterface.gui;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
-import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.*;
-import com.vaadin.ui.themes.ValoTheme;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
-import edu.kit.informatik.pcc.webinterface.datamanagement.Video;
-import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
 import edu.kit.informatik.pcc.webinterface.gui.navigation.Menu;
 
 import javax.servlet.annotation.WebServlet;
@@ -73,7 +71,7 @@ public class MyUI extends UI {
         navigator = new Navigator(this, contentArea);
         navigator.addView(AccountView.viewID, new AccountView(this));
         navigator.addView(VideoView.viewID, new VideoView());
-        navigator.setErrorView(new VideoView());
+        //navigator.setErrorView(new VideoView());
         this.setNavigator(navigator);
 
         menu = new Menu(this);

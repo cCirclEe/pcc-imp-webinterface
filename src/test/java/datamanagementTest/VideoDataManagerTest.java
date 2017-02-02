@@ -14,6 +14,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.LinkedList;
 
+import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 
@@ -34,7 +35,7 @@ public class VideoDataManagerTest {
         PowerMockito.mockStatic(ServerProxy.class);
 
         Account a = new Account("mail","password");
-        AccountDataManager.account = a;
+        AccountDataManager.setAccount(a);
         String testVideos = "[{\"videoInfo\":{\"name\":\"input\",\"id\":\"165\"}},{\"videoInfo\":{\"name\":\"input2\",\"id\":\"166\"}}]";
         when(ServerProxy.getVideosByAccount(a)).thenReturn(testVideos);
         when(ServerProxy.videoInfo(165,a)).thenReturn("info1");
@@ -43,12 +44,12 @@ public class VideoDataManagerTest {
         VideoDataManager.updateVideosAndInfo();
         LinkedList<Video> videos = new LinkedList<Video>();
         videos = VideoDataManager.getVideos();
-        System.out.print(videos.getFirst().getName());
-        System.out.print(videos.getFirst().getInfo());
-        System.out.print(videos.getFirst().getId());
+        assertEquals(videos.getFirst().getName(), "input");
+        assertEquals(videos.getFirst().getId(), Integer.parseInt("165"));
+        assertEquals(videos.getFirst().getInfo(), "info1");
 
-        System.out.print(videos.getLast().getName());
-        System.out.print(videos.getLast().getInfo());
-        System.out.print(videos.getLast().getId());
+        assertEquals(videos.getLast().getName(), "input2");
+        assertEquals(videos.getLast().getId(), Integer.parseInt("166"));
+        assertEquals(videos.getLast().getInfo(), "info2");
     }
 }

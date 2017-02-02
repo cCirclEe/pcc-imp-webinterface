@@ -5,11 +5,9 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table;
 import de.steinwedel.messagebox.MessageBox;
-import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
 import edu.kit.informatik.pcc.webinterface.datamanagement.Video;
 import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -36,7 +34,7 @@ public class VideoTable extends Table {
         int i = 2;
 
         for (Video v:videos) {
-
+            System.out.println(v.getName());
             Button download = new Button(FontAwesome.DOWNLOAD);
             download.addClickListener(
                     (ClickListener) event -> {
@@ -53,7 +51,7 @@ public class VideoTable extends Table {
                     }
             );
 
-            Button delete = new Button(FontAwesome.INFO);
+            Button delete = new Button(FontAwesome.REMOVE);
             delete.addClickListener(
                     (ClickListener) event -> {
                         VideoDataManager.deleteVideo(v.getId());
@@ -61,6 +59,7 @@ public class VideoTable extends Table {
             );
 
             this.addItem(new Object[] {v.getName(), download, info , delete}, i);
+            i++;
         }
     }
 }

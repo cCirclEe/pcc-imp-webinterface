@@ -28,7 +28,8 @@ public class AccountView extends VerticalLayout implements View{
     public AccountView(MyUI ui) {
         //initialization
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
-        mailLabel = new Label(messages.getString(viewID + "mailLabel"));
+        String mail = AccountDataManager.getAccount().getMail();
+        mailLabel = new Label(mail);
         mailChangeField = new TextField(messages.getString(viewID + "mailChangeField"));
         passwordChangeField = new TextField(messages.getString(viewID + "passwordChangeField"));
         passwordField = new TextField(messages.getString(viewID + "passwordField"));
