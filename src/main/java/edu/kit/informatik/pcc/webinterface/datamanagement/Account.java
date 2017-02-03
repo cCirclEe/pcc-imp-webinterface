@@ -1,10 +1,18 @@
 package edu.kit.informatik.pcc.webinterface.datamanagement;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
- * Created by chris on 17.01.2017.
- * The attributes of an account combined in one class for simpler useabilty.
+ * The attributes of an account combined in one class for simpler usability.
+ *
+ * @author Josh Romanowski, Christoph Hörtnagl
  */
 public class Account {
+
+    // JSON keys
+    private static final String JSON_KEY_MAIL = "mail";
+    private static final String JSON_KEY_PASSWORD = "password";
 
     //attributes
     private String mail;
@@ -27,5 +35,16 @@ public class Account {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getAsJson() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put(JSON_KEY_MAIL, this.mail);
+            json.put(JSON_KEY_PASSWORD, this.password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
     }
 }
