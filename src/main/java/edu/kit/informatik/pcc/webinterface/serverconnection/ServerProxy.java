@@ -84,7 +84,7 @@ public class ServerProxy {
         File downloadfile = null;
         if (response.getStatus() == 200) {
             //TODO: more user downloads
-            downloadfile = new File("C://Users/chris/Desktop/PSE/pcc-imp-webinterface/temp/test1");
+            downloadfile = new File("C://Users/chris/Desktop/PSE/pcc-imp-webinterface/temp/tVideo.avi");
             try {
                 Files.copy(inputStream, downloadfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
