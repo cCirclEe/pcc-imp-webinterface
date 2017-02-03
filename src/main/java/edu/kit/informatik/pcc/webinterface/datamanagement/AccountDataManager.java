@@ -72,7 +72,6 @@ public class AccountDataManager {
      */
     private static void startVerification(UUID id) {
         //TODO: verification
-        //language=JSON
         String json = account.getAsJson();
         Form f = new Form();
         f.param("data", json);

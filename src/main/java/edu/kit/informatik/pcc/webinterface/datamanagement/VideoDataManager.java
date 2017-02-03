@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -193,7 +195,7 @@ public class VideoDataManager {
         String ret = "";
 
         ret = ServerProxy.videoInfo(videoID, AccountDataManager.getAccount());
-        System.out.println(ret);
+
         switch (ret) {
             case "WRONG ACCOUNT":
                 MessageBox.createInfo()
@@ -204,13 +206,14 @@ public class VideoDataManager {
             case "FAILURE":
                 ret = errors.getString("noMeta");
                 break;
+            default:
+                parseMetaJSON(ret);
         }
 
         return ret;
     }
 
-
-    public static LinkedList getVideos() {
+    public static LinkedList<Video> getVideos() {
         updateVideosAndInfo();
         return videos;
     }
@@ -219,4 +222,21 @@ public class VideoDataManager {
         VideoDataManager.videos = null;
     }
 
+    private static String parseMetaJSON(String ret) {
+        JSONObject obj = new JSONObject(ret);
+
+        String date = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date(obj.getLong("date")));
+        String triggerType = obj.getString("triggerType");
+        double gForceX = obj.getDouble("triggerForceX");
+        double gForceY = obj.getDouble("triggerForceY");
+        double gForceZ = obj.getDouble("triggerForceZ");
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("Date: " + date + "\n");
+        builder.append("Trigger type: " + triggerType + "\n");
+        builder.append("G-Force (X)" + gForceX + "\n");
+        builder.append("G-Force (Y)" + gForceY + "\n");
+        builder.append("G-Force (Z)" + gForceZ);
+        return builder.toString();
+    }
 }
