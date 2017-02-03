@@ -32,7 +32,6 @@ public class MyUI extends UI {
     private VerticalLayout contentArea;
     private Menu menu;
     private Navigator navigator;
-    private Boolean firstloggedIn = false;
 
     /**
      * This method is called whenever somebody openes the UI, we do the initialization of
@@ -45,9 +44,8 @@ public class MyUI extends UI {
 
         VideoDataManager.setUI(this);
 
-        if (!firstloggedIn) {
-            initializeGraphicalComponents();
-        }
+        initializeGraphicalComponents();
+
     }
 
 
@@ -71,7 +69,6 @@ public class MyUI extends UI {
         //set User after login and add menu to the view
         //set up the menu
         background.removeAllComponents();
-        setFirstloggedIn();
 
         navigator = new Navigator(this, contentArea);
         navigator.addView(AccountView.viewID, new AccountView(this));
@@ -98,14 +95,6 @@ public class MyUI extends UI {
 
     public void logout() {
         initializeGraphicalComponents();
-    }
-
-    public void setFirstloggedIn() {
-        this.firstloggedIn = true;
-    }
-
-    public void resetFirstloggedIn() {
-        this.firstloggedIn = false;
     }
 
     /**

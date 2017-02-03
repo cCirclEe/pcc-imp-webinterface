@@ -16,9 +16,9 @@ import java.util.ResourceBundle;
  */
 public class VideoTable extends Table {
 
-    private LinkedList<Video> videos;
     private static final String tableId = "VideoTable";
     private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
+    private LinkedList<Video> videos;
 
     public VideoTable () {
         super();
@@ -34,7 +34,6 @@ public class VideoTable extends Table {
         int i = 2;
 
         for (Video v:videos) {
-            System.out.println(v.getName());
             Button download = new Button(FontAwesome.DOWNLOAD);
             download.addClickListener(
                     (ClickListener) event -> {
