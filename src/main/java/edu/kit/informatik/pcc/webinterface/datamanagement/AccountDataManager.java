@@ -19,10 +19,10 @@ import java.util.UUID;
  */
 public class AccountDataManager {
 
+    private static final String MAINADRESS = "http://laubenstone.de:2222/";
     //attributes
     private static Account account = null;
     private static ResourceBundle messages = ResourceBundle.getBundle("ErrorMessages");
-    private static final String MAINADRESS = "http://laubenstone.de:2222/";
 
     //methods
 
@@ -44,7 +44,7 @@ public class AccountDataManager {
 
         switch (ret) {
             case "SUCCESS":
-                startVerification(mail, password, id);
+                startVerification(id);
                 return true;
             case "FAILURE":
                 MessageBox.createInfo()
@@ -69,18 +69,11 @@ public class AccountDataManager {
      * This method starts the verification by creating uuid and sending it
      * per mail to the user and per ServerProxy to the database.
      *
-     * @param mail mail address
-     * @param password password
      */
-    private static void startVerification(String mail, String password, UUID id) {
+    private static void startVerification(UUID id) {
         //TODO: verification
         //language=JSON
-        String json = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ account.getMail() +"\",\n" +
-                "    \"password\": \""+ account.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
+        String json = account.getAsJson();
         Form f = new Form();
         f.param("data", json);
         f.param("uuid", id.toString());
@@ -101,16 +94,6 @@ public class AccountDataManager {
     public static boolean authenticateAccount(String mail, String password) {
         String ret = "";
 
-        /*
-        // This if makes it possible to use authenticate even a user has logged in
-        if (account == null) {
-            Account existingAccount = new Account(mail, password);
-            ret = ServerProxy.authenticateUser(existingAccount);
-        } else {
-            ret = ServerProxy.authenticateUser(account);
-        }
-        */
-
         account = new Account(mail, password);
         ret = ServerProxy.authenticateUser(account);
 
@@ -119,17 +102,17 @@ public class AccountDataManager {
                 MessageBox.createInfo()
                         .withMessage(messages.getString("noSuchAccount"))
                         .open();
-                return false;
+                break;
             case "WRONG PASSWORD":
                 MessageBox.createInfo()
                         .withMessage(messages.getString("wrongPassword"))
                         .open();
-                return false;
+                break;
             case "NOT VERIFIED":
                 MessageBox.createInfo()
                         .withMessage(messages.getString("notVerified"))
                         .open();
-                return false;
+                break;
             case "SUCCESS":
                 return true;
             default:
@@ -137,8 +120,11 @@ public class AccountDataManager {
                 MessageBox.createInfo()
                         .withMessage(messages.getString("authenticateFail"))
                         .open();
-                return false;
+                break;
         }
+
+        account = null;
+        return false;
     }
 
     /**
@@ -180,12 +166,12 @@ public class AccountDataManager {
                 MessageBox.createInfo()
                         .withMessage(messages.getString("changeFail"))
                         .open();
-                return false;
+                break;
             case "FAILURE":
                 MessageBox.createInfo()
                         .withMessage(messages.getString("changeFail"))
                         .open();
-                return false;
+                break;
             case "SUCCESS":
                 MessageBox.createInfo()
                         .withMessage(messages.getString("accountChanged"))
@@ -195,8 +181,9 @@ public class AccountDataManager {
                 MessageBox.createInfo()
                         .withMessage(messages.getString("changeFail"))
                         .open();
-                return false;
+                break;
         }
+        return true;
     }
 
     /**
@@ -221,12 +208,12 @@ public class AccountDataManager {
                 MessageBox.createInfo()
                         .withMessage(messages.getString("deleteFail"))
                         .open();
-                return false;
+                break;
             case "FAILURE":
                 MessageBox.createInfo()
                         .withMessage(messages.getString("deleteFail"))
                         .open();
-                return false;
+                break;
             case "SUCCESS":
                 MessageBox.createInfo()
                         .withMessage(messages.getString("accountDeleted"))
@@ -238,8 +225,9 @@ public class AccountDataManager {
                 MessageBox.createInfo()
                         .withMessage(messages.getString("deleteFail"))
                         .open();
-                return false;
+                break;
         }
+        return false;
     }
 
     /**

@@ -23,6 +23,7 @@ public class AccountView extends VerticalLayout implements View{
     private TextField passwordChangeField;
     private TextField passwordField;
     private Button changeButton;
+    private Button deleteButton;
 
     //constructors
     public AccountView(MyUI ui) {
@@ -34,26 +35,41 @@ public class AccountView extends VerticalLayout implements View{
         passwordChangeField = new TextField(messages.getString(viewID + "passwordChangeField"));
         passwordField = new TextField(messages.getString(viewID + "passwordField"));
         changeButton = new Button(messages.getString(viewID + "changeButton"));
+        deleteButton = new Button(messages.getString(viewID + "deleteButton"));
 
         changeButton.addClickListener(
                 new Button.ClickListener() {
                     @Override
                     public void buttonClick(Button.ClickEvent event) {
                         if (AccountDataManager.changeAccount(passwordField.getValue(), mailChangeField.getValue(), passwordChangeField.getValue())) {
-                            ui.init(null);
+                            ui.initializeGraphicalComponents();
                         }
                     }
                 }
         );
-    }
 
-    //methods
-    @Override
-    public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+        deleteButton.addClickListener(
+                new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        if (AccountDataManager.deleteAccount()) {
+                            ui.initializeGraphicalComponents();
+                        }
+                    }
+                }
+        );
+
         this.addComponent(mailLabel);
         this.addComponent(mailChangeField);
         this.addComponent(passwordChangeField);
         this.addComponent(passwordField);
         this.addComponent(changeButton);
+        this.addComponent(deleteButton);
+    }
+
+    //methods
+    @Override
+    public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
+
     }
 }

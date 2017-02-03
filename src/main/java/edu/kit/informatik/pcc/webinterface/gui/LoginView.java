@@ -1,16 +1,14 @@
 package edu.kit.informatik.pcc.webinterface.gui;
 
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.*;
-
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
-import com.vaadin.navigator.View;
+import com.vaadin.ui.VerticalLayout;
 import de.steinwedel.messagebox.MessageBox;
-import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
-import sun.misc.MessageUtils;
 
 import java.util.ResourceBundle;
 
@@ -22,18 +20,16 @@ public class LoginView extends VerticalLayout implements View {
 
     public final static String viewID = "LoginView";
     private TextField mailField;
-    private TextField passwordField;
+    private PasswordField passwordField;
     private Button loginButton;
     private Button registerButton;
-    private MyUI ui;
 
     //Constructor
     public LoginView(MyUI ui) {
         //initialization
-        this.ui = ui;
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
         mailField = new TextField(messages.getString(viewID + "mailField"));
-        passwordField = new TextField(messages.getString(viewID + "passwordField"));
+        passwordField = new PasswordField(messages.getString(viewID + "passwordField"));
         loginButton = new Button(messages.getString(viewID + "loginButton"));
         registerButton = new Button(messages.getString(viewID + "registerButton"));
 

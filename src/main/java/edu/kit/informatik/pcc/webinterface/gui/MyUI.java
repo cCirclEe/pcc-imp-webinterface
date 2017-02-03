@@ -9,6 +9,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
+import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
 import edu.kit.informatik.pcc.webinterface.gui.navigation.Menu;
 
 import javax.servlet.annotation.WebServlet;
@@ -24,25 +25,15 @@ import java.util.ResourceBundle;
 @Theme("valo")
 public class MyUI extends UI {
 
+    private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
     //attributes
     private HorizontalLayout background;
     private VerticalLayout menuArea;
     private VerticalLayout contentArea;
     private Menu menu;
     private Navigator navigator;
-    private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
     private Boolean firstloggedIn = false;
 
-    /**
-     *  The Servlet in which the site runs.
-     */
-    @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
-    public static class MyUIServlet extends VaadinServlet {
-    }
-
-
-    //methods
     /**
      * This method is called whenever somebody openes the UI, we do the initialization of
      * our prameters here.
@@ -51,10 +42,24 @@ public class MyUI extends UI {
      */
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        // initialze Graphical components
+
+        VideoDataManager.setUI(this);
+
+        if (!firstloggedIn) {
+            initializeGraphicalComponents();
+        }
+    }
+
+
+    //methods
+
+    public void initializeGraphicalComponents() {
         background = new HorizontalLayout();
         menuArea = new VerticalLayout();
         contentArea = new VerticalLayout();
+
+        AccountDataManager.setAccount(null);
+        VideoDataManager.removeVideos();
 
         LoginView login = new LoginView(this);
         background.addComponent(login);
@@ -66,12 +71,13 @@ public class MyUI extends UI {
         //set User after login and add menu to the view
         //set up the menu
         background.removeAllComponents();
-        background.addComponent(contentArea);
+        setFirstloggedIn();
 
         navigator = new Navigator(this, contentArea);
         navigator.addView(AccountView.viewID, new AccountView(this));
         navigator.addView(VideoView.viewID, new VideoView());
-        //navigator.setErrorView(new VideoView());
+
+        navigator.setErrorView(new VideoView());
         this.setNavigator(navigator);
 
         menu = new Menu(this);
@@ -84,16 +90,29 @@ public class MyUI extends UI {
 
         menu.addUserMenu(AccountDataManager.getAccount().getMail());
 
-        background.addComponentAsFirst(menuArea);
+        background.addComponent(menuArea);
+        background.addComponent(contentArea);
 
         navigator.navigateTo(VideoView.viewID);
     }
 
     public void logout() {
-        init(null);
+        initializeGraphicalComponents();
     }
 
     public void setFirstloggedIn() {
         this.firstloggedIn = true;
+    }
+
+    public void resetFirstloggedIn() {
+        this.firstloggedIn = false;
+    }
+
+    /**
+     * The Servlet in which the site runs.
+     */
+    @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
+    @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
+    public static class MyUIServlet extends VaadinServlet {
     }
 }

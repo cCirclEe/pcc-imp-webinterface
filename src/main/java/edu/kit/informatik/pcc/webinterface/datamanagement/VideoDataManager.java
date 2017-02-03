@@ -3,7 +3,11 @@ package edu.kit.informatik.pcc.webinterface.datamanagement;
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;
+import edu.kit.informatik.pcc.webinterface.gui.MyUI;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,9 +24,14 @@ public class VideoDataManager {
 
     //attributes
     private static LinkedList<Video> videos = null;
-    private static ResourceBundle messages = ResourceBundle.getBundle("ErrorMessages");
+    private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
+    private static MyUI ui;
 
     //methods
+
+    public static void setUI(MyUI myui) {
+        ui = myui;
+    }
 
     /**
      * This method sends a request to download a video via the ServerProxy.
@@ -31,13 +40,13 @@ public class VideoDataManager {
      */
     public static void downloadVideo(int videoID) {
         String ret = "";
-        File file = new File("");
+        File file = new File("C://Users/chris/Desktop/PSE/pcc-uiDemos/testUI/src/main/resources/Down.txt");
 
-        file = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
+        //file = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
 
         if (file == null) {
             MessageBox.createInfo()
-                    .withMessage(messages.getString("videoDownloadFail"))
+                    .withMessage(errors.getString("videoDownloadFail"))
                     .open();
             return;
         }
@@ -46,9 +55,21 @@ public class VideoDataManager {
         FileResource resource = new FileResource(file);
 
         FileDownloader fileDownloader = new FileDownloader(resource);
-        Button button = new Button();
+        Window subWindow = new Window("Download");
+        VerticalLayout subLayout = new VerticalLayout();
+        Button button = new Button("start Download");
+        button.addClickListener(
+                new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        Notification.show("you clicked it");
+                    }
+                }
+        );
+        subLayout.addComponent(button);
         fileDownloader.extend(button);
-        button.click();
+        subWindow.center();
+        ui.addWindow(subWindow);
     }
 
     /**
@@ -59,28 +80,28 @@ public class VideoDataManager {
     public static void deleteVideo(int videoID) {
         String ret = "";
 
-        ret = ServerProxy.videoDelete(videoID,AccountDataManager.getAccount());
+        ret = ServerProxy.videoDelete(videoID, AccountDataManager.getAccount());
         System.out.println(ret);
 
         switch (ret) {
             case "WRONG ACCOUNT":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("videoDeleteFail"))
+                        .withMessage(errors.getString("videoDeleteFail"))
                         .open();
                 return;
             case "FAILURE":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("videoDeleteFail"))
+                        .withMessage(errors.getString("videoDeleteFail"))
                         .open();
                 return;
             case "SUCCESS":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("videoDeleted"))
+                        .withMessage(errors.getString("videoDeleted"))
                         .open();
                 break;
             default:
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("videoDeleteFail"))
+                        .withMessage(errors.getString("videoDeleteFail"))
                         .open();
         }
 
@@ -110,12 +131,12 @@ public class VideoDataManager {
         switch (ret) {
             case "WRONG ACCOUNT":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("getVideoFail"))
+                        .withMessage(errors.getString("getVideoFail"))
                         .open();
                 break;
             case "FAILURE":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("getVideoFail"))
+                        .withMessage(errors.getString("getVideoFail"))
                         .open();
                 break;
             default:
@@ -128,7 +149,6 @@ public class VideoDataManager {
      * This method parses the String and creates a list of Video Objects.
      *
      * @param videos the String which contains the videos
-     *
      */
     private static LinkedList createVideoList(String videos) {
         LinkedList<Video> videoList = new LinkedList();
@@ -137,9 +157,8 @@ public class VideoDataManager {
 
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
-            JSONObject videoInfo = jsonObject.getJSONObject("videoInfo");
-            String name = videoInfo.getString("name");
-            int id = Integer.parseInt(videoInfo.getString("id"));
+            String name = jsonObject.getString("name");
+            int id = jsonObject.getInt("id");
 
             Video video = new Video(name, id, "");
             videoList.add(video);
@@ -150,24 +169,18 @@ public class VideoDataManager {
 
     /**
      * This method adds the meta-info to every video object in the list.
-     *
      */
     private static void addInfoToVideoList() {
 
         if (videos == null) {
             MessageBox.createInfo()
-                    .withMessage(messages.getString("infoFail"))
+                    .withMessage(errors.getString("infoFail"))
                     .open();
         }
 
-        for (Video v: videos) {
+        for (Video v : videos) {
             String info = getMetaInfFromServer(v.getId());
-            System.out.println(info);
-            if (info != null) {
-                v.setInfo(info);
-            } else {
-                v.setInfo("asdf");
-            }
+            v.setInfo(info);
         }
     }
 
@@ -184,19 +197,16 @@ public class VideoDataManager {
         switch (ret) {
             case "WRONG ACCOUNT":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("infoFail"))
+                        .withMessage(errors.getString("infoFail"))
                         .open();
+                ret = errors.getString("noMeta");
                 break;
             case "FAILURE":
-                MessageBox.createInfo()
-                        .withMessage(messages.getString("infoFail"))
-                        .open();
+                ret = errors.getString("noMeta");
                 break;
-            default:
-                return ret;
         }
 
-        return null;
+        return ret;
     }
 
 

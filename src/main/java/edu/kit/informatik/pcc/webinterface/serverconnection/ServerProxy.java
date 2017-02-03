@@ -18,23 +18,25 @@ import java.util.UUID;
 
 /**
  * Created by chris on 17.01.2017.
+ *
+ * This class handles all comunication with the Server.
  */
 public class ServerProxy {
 
     private static final String HOST = "http://laubenstone.de:2222/";
+    private static final String PARAM = "account";
 
+    /**
+     * Method does a Server Request to get the Videos from account a.
+     * Then gives the answer back.
+     *
+     * @param a Account
+     * @return Answer from Server.
+     */
     public static String getVideosByAccount(Account a) {
-
-        // TODO: String json .... -> a.getAsJson();
-        //language=JSON
-        String json = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ a.getMail() +"\",\n" +
-                "    \"password\": \""+ a.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
+        String json = a.getAsJson();
         Form f = new Form();
-        f.param("data", json);
+        f.param(PARAM, json);
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(HOST).path("webservice").path("getVideosByAccount");
         System.out.println(webTarget.getUri());
@@ -43,19 +45,18 @@ public class ServerProxy {
         return response.readEntity(String.class);
     }
 
+    /**
+     * This class gets the Video information from the Server.
+     *
+     * @param videoID Video which info is wanted
+     * @param a       Account to which the video is referred
+     * @return Answer from the Server
+     */
     public static String videoInfo(int videoID, Account a) {
-        // TODO: String json .... -> a.getAsJson();
-
-        //language=JSON
-        String json = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ a.getMail() +"\",\n" +
-                "    \"password\": \""+ a.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
+        String json = a.getAsJson();
         Form f = new Form();
-        f.param("data", json);
-        f.param("id", Integer.toString(videoID));
+        f.param(PARAM, json);
+        f.param("videoId", Integer.toString(videoID));
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(HOST).path("webservice").path("videoInfo");
         System.out.println(webTarget.getUri());
@@ -64,18 +65,17 @@ public class ServerProxy {
         return response.readEntity(String.class);
     }
 
+    /**
+     * This method gets the Video as File from the Server
+     *
+     * @param videoID Video which is wanted
+     * @param a Account to which the video is referred
+     * @return Answer from the Server
+     */
     public static File videoDownload(int videoID, Account a) {
-        // TODO: String json .... -> a.getAsJson();
-
-        //language=JSON
-        String json = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ a.getMail() +"\",\n" +
-                "    \"password\": \""+ a.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
+        String json = a.getAsJson();
         Form f = new Form();
-        f.param("data", json);
+        f.param(PARAM, json);
         f.param("videoId", Integer.toString(videoID));
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(HOST).path("webservice").path("videoDownload");
@@ -84,7 +84,7 @@ public class ServerProxy {
         File downloadfile = null;
         if (response.getStatus() == 200) {
             //TODO: more user downloads
-            downloadfile = new File("C://Users/chris/Desktop/PSE/pcc-imp-webinterface/temp/test");
+            downloadfile = new File("C://Users/chris/Desktop/PSE/pcc-imp-webinterface/temp/test1");
             try {
                 Files.copy(inputStream, downloadfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
@@ -94,17 +94,17 @@ public class ServerProxy {
         return downloadfile;
     }
 
+    /**
+     * This method deletes a Video from the Server.
+     *
+     * @param videoID Video which shall be deleted
+     * @param a Account to which the video is referred
+     * @return Answer from the Server
+     */
     public static String videoDelete(int videoID, Account a) {
-        // TODO: String json .... -> a.getAsJson();
-        //language=JSON
-        String json = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ a.getMail() +"\",\n" +
-                "    \"password\": \""+ a.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
+        String json = a.getAsJson();
         Form f = new Form();
-        f.param("data", json);
+        f.param(PARAM, json);
         String string = Integer.toString(videoID);
         System.out.println(string);
         f.param("id", string);
@@ -113,23 +113,19 @@ public class ServerProxy {
         System.out.println(webTarget.getUri());
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
 
-        System.out.println(a.getMail());
-        System.out.println(a.getPassword());
-
         return response.readEntity(String.class);
     }
 
+    /**
+     * This method calls the Server to authenticate the given account.
+     *
+     * @param a Account
+     * @return Answer from the Server.
+     */
     public static String authenticateUser(Account a) {
-        // TODO: String json .... -> a.getAsJson();
-        //language=JSON
-        String json = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ a.getMail() +"\",\n" +
-                "    \"password\": \""+ a.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
+        String json = a.getAsJson();
         Form f = new Form();
-        f.param("data", json);
+        f.param(PARAM, json);
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(HOST).path("webservice").path("authenticate");
         System.out.println(webTarget.getUri());
@@ -138,17 +134,17 @@ public class ServerProxy {
         return response.readEntity(String.class);
     }
 
+    /**
+     * This method calls the Server to create an Account.
+     *
+     * @param a Account to create
+     * @param id a unique id
+     * @return Answer from the Server
+     */
     public static String createAccount(Account a, UUID id) {
-        // TODO: String json .... -> a.getAsJson();
-        //language=JSON
-        String json = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ a.getMail() +"\",\n" +
-                "    \"password\": \""+ a.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
+        String json = a.getAsJson();
         Form f = new Form();
-        f.param("data", json);
+        f.param(PARAM, json);
         f.param("uuid", id.toString());
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(HOST).path("webservice").path("createAccount");
@@ -158,25 +154,19 @@ public class ServerProxy {
         return response.readEntity(String.class);
     }
 
+    /**
+     * This method calls the server to change account date from old to new.
+     *
+     * @param oldAccount
+     * @param newAccount
+     * @return Answer form the server
+     */
     public static String changeAccount(Account oldAccount, Account newAccount) {
-        // TODO: String json .... -> a.getAsJson();
-        //language=JSON
-        String json = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ oldAccount.getMail() +"\",\n" +
-                "    \"password\": \""+ oldAccount.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
-        // TODO: New Json = json !!
-        String newJson = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ newAccount.getMail() +"\",\n" +
-                "    \"password\": \""+ newAccount.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
+        String json = oldAccount.getAsJson();
+        String newJson = newAccount.getAsJson();
         Form f = new Form();
-        f.param("data", json);
-        f.param("newData", newJson);
+        f.param(PARAM, json);
+        f.param("newAccount", newJson);
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(HOST).path("webservice").path("changeAccount");
         System.out.println(webTarget.getUri());
@@ -185,19 +175,18 @@ public class ServerProxy {
         return response.readEntity(String.class);
     }
 
+    /**
+     * If you dont know what this does, dont use it.
+     *
+     * @param a Account to delete
+     * @return Answer from the server
+     */
     public static String deleteAccount(Account a) {
-        // TODO: String json .... -> a.getAsJson();
-        //language=JSON
-        String json = "{\n" +
-                "  \"account\": {\n" +
-                "    \"mail\": \""+ a.getMail() +"\",\n" +
-                "    \"password\": \""+ a.getPassword() +"\",\n" +
-                "  }\n" +
-                "}";
+        String json = a.getAsJson();
         Form f = new Form();
-        f.param("data", json);
+        f.param(PARAM, json);
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(HOST).path("webservice").path("delteAccount");
+        WebTarget webTarget = client.target(HOST).path("webservice").path("deleteAccount");
         System.out.println(webTarget.getUri());
         Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
 
