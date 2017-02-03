@@ -10,6 +10,7 @@ import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.gui.MyUI;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -61,12 +62,7 @@ public class VideoDataManager {
         VerticalLayout subLayout = new VerticalLayout();
         Button button = new Button("start Download");
         button.addClickListener(
-                new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        Notification.show("you clicked it");
-                    }
-                }
+                (Button.ClickListener) event -> Notification.show("you clicked it")
         );
         subLayout.addComponent(button);
         fileDownloader.extend(button);
@@ -193,11 +189,10 @@ public class VideoDataManager {
      * @param videoID the id of the video to fetch the info from
      */
     private static String getMetaInfFromServer(int videoID) {
-        String ret = "";
+        String response = ServerProxy.videoInfo(videoID, AccountDataManager.getAccount());
+        String ret;
 
-        ret = ServerProxy.videoInfo(videoID, AccountDataManager.getAccount());
-
-        switch (ret) {
+        switch (response) {
             case "WRONG ACCOUNT":
                 MessageBox.createInfo()
                         .withMessage(errors.getString("infoFail"))
@@ -208,7 +203,7 @@ public class VideoDataManager {
                 ret = errors.getString("noMeta");
                 break;
             default:
-                parseMetaJSON(ret);
+                ret = parseMetaJSON(response);
         }
 
         return ret;
@@ -225,19 +220,28 @@ public class VideoDataManager {
 
     private static String parseMetaJSON(String ret) {
         JSONObject obj = new JSONObject(ret);
+        String date;
+        double gForceX;
+        double gForceY;
+        double gForceZ;
+        String triggerType;
 
-        String date = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS").format(new Date(obj.getLong("date")));
-        String triggerType = obj.getString("triggerType");
-        double gForceX = obj.getDouble("triggerForceX");
-        double gForceY = obj.getDouble("triggerForceY");
-        double gForceZ = obj.getDouble("triggerForceZ");
+        try {
+            date = new SimpleDateFormat("HH:mm:ss.SSS dd.MM.yyyy").format(new Date(obj.getLong("date")));
+            triggerType = obj.getString("triggerType");
+            gForceX = obj.getDouble("triggerForceX");
+            gForceY = obj.getDouble("triggerForceY");
+            gForceZ = obj.getDouble("triggerForceZ");
+        } catch (JSONException e) {
+            return "";
+        }
 
         StringBuilder builder = new StringBuilder();
         builder.append("Date: " + date + "\n");
         builder.append("Trigger type: " + triggerType + "\n");
-        builder.append("G-Force (X)" + gForceX + "\n");
-        builder.append("G-Force (Y)" + gForceY + "\n");
-        builder.append("G-Force (Z)" + gForceZ);
+        builder.append("G-Force (X): " + gForceX + "\n");
+        builder.append("G-Force (Y): " + gForceY + "\n");
+        builder.append("G-Force (Z): " + gForceZ);
         return builder.toString();
     }
 }
