@@ -42,9 +42,9 @@ public class VideoDataManager {
      */
     public static void downloadVideo(int videoID) {
         String ret = "";
-        File file = new File("C://Users/chris/Desktop/PSE/pcc-uiDemos/testUI/src/main/resources/Down.txt");
+        File file = new File("");
 
-        //file = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
+        file = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
 
         if (file == null) {
             MessageBox.createInfo()
@@ -70,6 +70,7 @@ public class VideoDataManager {
         );
         subLayout.addComponent(button);
         fileDownloader.extend(button);
+        subWindow.setContent(subLayout);
         subWindow.center();
         ui.addWindow(subWindow);
     }
