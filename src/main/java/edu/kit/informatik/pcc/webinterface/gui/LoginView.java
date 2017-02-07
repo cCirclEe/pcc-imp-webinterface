@@ -2,11 +2,8 @@ package edu.kit.informatik.pcc.webinterface.gui;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.PasswordField;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
 
@@ -26,6 +23,9 @@ public class LoginView extends VerticalLayout implements View {
 
     //Constructor
     public LoginView(MyUI ui) {
+        this.setSizeFull();
+        this.setSpacing(true);
+
         //initialization
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
         mailField = new TextField(messages.getString(viewID + "mailField"));
@@ -50,11 +50,28 @@ public class LoginView extends VerticalLayout implements View {
                     }
                 }
         );
+        Label header = new Label("Pricacy Crash Cam");
+        header.setSizeUndefined();
+        header.setHeight(10, Unit.PERCENTAGE);
 
-        this.addComponent(mailField);
-        this.addComponent(passwordField);
-        this.addComponent(loginButton);
-        this.addComponent(registerButton);
+        this.addComponent(header);
+        this.setComponentAlignment(header, Alignment.TOP_CENTER);
+
+        Panel loginPanel = new Panel("Login");
+        VerticalLayout content = new VerticalLayout();
+        content.setSizeUndefined();
+        loginPanel.setContent(content);
+        loginPanel.setSizeUndefined();
+
+        content.addComponent(mailField);
+        content.addComponent(passwordField);
+        content.addComponent(loginButton);
+        content.addComponent(registerButton);
+        content.setSpacing(true);
+        content.setMargin(true);
+
+        this.addComponent(loginPanel);
+        this.setComponentAlignment(loginPanel, Alignment.MIDDLE_CENTER);
     }
 
     @Override
