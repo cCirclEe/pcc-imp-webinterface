@@ -1,15 +1,11 @@
 package edu.kit.informatik.pcc.webinterface.datamanagement;
 
 import de.steinwedel.messagebox.MessageBox;
+import edu.kit.informatik.pcc.webinterface.mailservice.MailService;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
+import org.apache.commons.mail.EmailException;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
@@ -19,10 +15,14 @@ import java.util.UUID;
  */
 public class AccountDataManager {
 
-    private static final String MAINADRESS = "http://laubenstone.de:2222/";
+    private static final String HOST = "http://laubenstone.de:2222/";
+    private static final String SUCCESS = "SUCCESS";
+    private static final String FAILURE = "FAILURE";
+    private static final String WRONGACCOUNT = "WRONG ACCOUNT";
     //attributes
     private static Account account = null;
-    private static ResourceBundle messages = ResourceBundle.getBundle("ErrorMessages");
+    private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
+    private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
 
     //methods
 
@@ -43,23 +43,23 @@ public class AccountDataManager {
         System.out.println(ret);
 
         switch (ret) {
-            case "SUCCESS":
+            case SUCCESS:
                 startVerification(id);
                 return true;
-            case "FAILURE":
+            case FAILURE:
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("createFail"))
+                        .withMessage(errors.getString("createFail"))
                         .open();
                 return false;
             case "ACCOUNT EXISTS":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("existingAccount"))
+                        .withMessage(errors.getString("existingAccount"))
                         .open();
                 return false;
             default:
                 System.out.println(ret);
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("createFail"))
+                        .withMessage(errors.getString("createFail"))
                         .open();
                 return false;
         }
@@ -72,14 +72,20 @@ public class AccountDataManager {
      */
     private static void startVerification(UUID id) {
         //TODO: verification
-        String json = account.getAsJson();
-        Form f = new Form();
-        f.param("data", json);
-        f.param("uuid", id.toString());
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(MAINADRESS).path("webservice").path("verifyAccount");
-        System.out.println(webTarget.getUri());
-        Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+
+        String text = messages.getString("mailText");
+        String subject = messages.getString("mailSubject");
+        String link = "http://laubenstone.de:2222/webservice/verifyAccount?uuid=" + id.toString();
+        text = text + link;
+        String to = account.getMail();
+        String from = messages.getString("mail");
+        try {
+            MailService.send(from, to, subject, text);
+        } catch (EmailException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -99,25 +105,25 @@ public class AccountDataManager {
         switch (ret) {
             case "NOT EXISTING":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("noSuchAccount"))
+                        .withMessage(errors.getString("noSuchAccount"))
                         .open();
                 break;
             case "WRONG PASSWORD":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("wrongPassword"))
+                        .withMessage(errors.getString("wrongPassword"))
                         .open();
                 break;
             case "NOT VERIFIED":
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("notVerified"))
+                        .withMessage(errors.getString("notVerified"))
                         .open();
                 break;
-            case "SUCCESS":
+            case SUCCESS:
                 return true;
             default:
                 System.out.println(ret);
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("authenticateFail"))
+                        .withMessage(errors.getString("authenticateFail"))
                         .open();
                 break;
         }
@@ -140,45 +146,40 @@ public class AccountDataManager {
 
         if (account == null) {
             MessageBox.createInfo()
-                    .withMessage(messages.getString("changeFail"))
+                    .withMessage(errors.getString("changeFail"))
                     .open();
             return false;
         }
 
         if (!password.equals(account.getPassword())) {
             MessageBox.createInfo()
-                    .withMessage(messages.getString("wrongPassword"))
+                    .withMessage(errors.getString("wrongPassword"))
                     .open();
             return false;
         }
 
         Account newAccount = new Account(mailNew, passwordNew);
         ret = ServerProxy.changeAccount(account, newAccount);
-        System.out.println(AccountDataManager.getAccount().getMail());
-        System.out.println(AccountDataManager.getAccount().getPassword());
-        System.out.println(newAccount.getMail());
-        System.out.println(newAccount.getPassword());
-        System.out.println(ret);
 
         switch (ret) {
-            case "WRONG ACCOUNT":
+            case WRONGACCOUNT:
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("changeFail"))
+                        .withMessage(errors.getString("changeFail"))
                         .open();
                 break;
-            case "FAILURE":
+            case FAILURE:
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("changeFail"))
+                        .withMessage(errors.getString("changeFail"))
                         .open();
                 break;
-            case "SUCCESS":
+            case SUCCESS:
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("accountChanged"))
+                        .withMessage(errors.getString("accountChanged"))
                         .open();
                 return true;
             default:
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("changeFail"))
+                        .withMessage(errors.getString("changeFail"))
                         .open();
                 break;
         }
@@ -195,7 +196,7 @@ public class AccountDataManager {
 
         if (account == null) {
             MessageBox.createInfo()
-                    .withMessage(messages.getString("deleteFail"))
+                    .withMessage(errors.getString("deleteFail"))
                     .open();
             return false;
         }
@@ -203,26 +204,26 @@ public class AccountDataManager {
         ret = ServerProxy.deleteAccount(account);
 
         switch (ret) {
-            case "WRONG ACCOUNT":
+            case WRONGACCOUNT:
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("deleteFail"))
+                        .withMessage(errors.getString("deleteFail"))
                         .open();
                 break;
-            case "FAILURE":
+            case FAILURE:
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("deleteFail"))
+                        .withMessage(errors.getString("deleteFail"))
                         .open();
                 break;
-            case "SUCCESS":
+            case SUCCESS:
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("accountDeleted"))
+                        .withMessage(errors.getString("accountDeleted"))
                         .open();
                 account = null;
                 return true;
             default:
                 System.out.println(ret);
                 MessageBox.createInfo()
-                        .withMessage(messages.getString("deleteFail"))
+                        .withMessage(errors.getString("deleteFail"))
                         .open();
                 break;
         }

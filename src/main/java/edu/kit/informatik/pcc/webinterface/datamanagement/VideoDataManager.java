@@ -2,6 +2,7 @@ package edu.kit.informatik.pcc.webinterface.datamanagement;
 
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
@@ -25,6 +26,9 @@ import java.util.ResourceBundle;
  */
 public class VideoDataManager {
 
+    private static final String SUCCESS = "SUCCESS";
+    private static final String FAILURE = "FAILURE";
+    private static final String WRONGACCOUNT = "WRONG ACCOUNT";
     //attributes
     private static LinkedList<Video> videos = null;
     private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
@@ -58,12 +62,16 @@ public class VideoDataManager {
         FileResource resource = new FileResource(file);
 
         FileDownloader fileDownloader = new FileDownloader(resource);
-        Window subWindow = new Window("Download");
+        Window subWindow = new Window("Bestätigen Sie den Download");
+        subWindow.setHeight("100px");
+        subWindow.setWidth(300, Sizeable.Unit.PIXELS);
         VerticalLayout subLayout = new VerticalLayout();
-        Button button = new Button("start Download");
+        Button button = new Button("Download starten");
         button.addClickListener(
                 (Button.ClickListener) event -> Notification.show("you clicked it")
         );
+        subLayout.setSizeFull();
+        subLayout.setMargin(true);
         subLayout.addComponent(button);
         fileDownloader.extend(button);
         subWindow.setContent(subLayout);
@@ -83,17 +91,17 @@ public class VideoDataManager {
         System.out.println(ret);
 
         switch (ret) {
-            case "WRONG ACCOUNT":
+            case WRONGACCOUNT:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("videoDeleteFail"))
                         .open();
                 return;
-            case "FAILURE":
+            case FAILURE:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("videoDeleteFail"))
                         .open();
                 return;
-            case "SUCCESS":
+            case SUCCESS:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("videoDeleted"))
                         .open();
@@ -125,15 +133,14 @@ public class VideoDataManager {
     private static String getVideosFromServer() {
         String ret = "";
         ret = ServerProxy.getVideosByAccount(AccountDataManager.getAccount());
-        System.out.println(ret);
 
         switch (ret) {
-            case "WRONG ACCOUNT":
+            case WRONGACCOUNT:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("getVideoFail"))
                         .open();
                 break;
-            case "FAILURE":
+            case FAILURE:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("getVideoFail"))
                         .open();
@@ -193,13 +200,13 @@ public class VideoDataManager {
         String ret;
 
         switch (response) {
-            case "WRONG ACCOUNT":
+            case WRONGACCOUNT:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("infoFail"))
                         .open();
                 ret = errors.getString("noMeta");
                 break;
-            case "FAILURE":
+            case FAILURE:
                 ret = errors.getString("noMeta");
                 break;
             default:

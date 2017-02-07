@@ -2,7 +2,6 @@ package edu.kit.informatik.pcc.webinterface.gui;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -16,7 +15,9 @@ public class VideoView extends VerticalLayout implements View{
 
     //constructors
     public VideoView() {
+        this.setSizeFull();
         videoTable = new VideoTable();
+        videoTable.setSizeFull();
         this.addComponent(videoTable);
     }
 

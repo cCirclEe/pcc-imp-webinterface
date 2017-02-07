@@ -55,6 +55,7 @@ public class MyUI extends UI {
         background = new HorizontalLayout();
         menuArea = new VerticalLayout();
         contentArea = new VerticalLayout();
+        background.setSizeFull();
 
         AccountDataManager.setAccount(null);
         VideoDataManager.removeVideos();
@@ -70,6 +71,7 @@ public class MyUI extends UI {
         //set up the menu
         background.removeAllComponents();
 
+        contentArea.setSizeFull();
         navigator = new Navigator(this, contentArea);
         navigator.addView(AccountView.viewID, new AccountView(this));
         navigator.addView(VideoView.viewID, new VideoView());
@@ -83,6 +85,7 @@ public class MyUI extends UI {
         menu.addLogout();
 
         menuArea.setHeight("800px");
+        menuArea.setWidth("400px");
         menuArea.addComponent(menu);
 
         menu.addUserMenu(AccountDataManager.getAccount().getMail());
