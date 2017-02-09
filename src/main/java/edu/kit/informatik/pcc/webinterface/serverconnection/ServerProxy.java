@@ -26,8 +26,8 @@ import java.util.UUID;
  */
 public class ServerProxy {
 
-    //private static final String HOST = "http://laubenstone.de:2222/";
-    private static final String HOST = "http://localhost:2222/";
+    private static final String HOST = "http://laubenstone.de:2222/";
+    //private static final String HOST = "http://localhost:2222/";
 
     //status strings
     //TODO: Change to server connection failure -> handle
