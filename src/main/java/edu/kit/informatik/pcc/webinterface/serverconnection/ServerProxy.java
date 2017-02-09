@@ -2,6 +2,7 @@ package edu.kit.informatik.pcc.webinterface.serverconnection;
 
 import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -20,11 +21,23 @@ import java.util.UUID;
  * Created by chris on 17.01.2017.
  *
  * This class handles all comunication with the Server.
+ *
+ * @author Josh Romanowski, Fabian Wenzel
  */
 public class ServerProxy {
 
     private static final String HOST = "http://laubenstone.de:2222/";
-    private static final String PARAM = "account";
+    //private static final String HOST = "http://localhost:2222/";
+
+    //status strings
+    //TODO: Change to server connection failure -> handle
+    private static final String FAILURE = "FAILURE";
+
+    //param strings
+    private static final String VIDEO_ID = "videoId";
+    private static final String ACCOUNT = "account";
+    private static final String NEW_ACCOUNT = "newAccount";
+    private static final String UUID = "uuid";
 
     /**
      * Method does a Server Request to get the Videos from account a.
@@ -33,16 +46,13 @@ public class ServerProxy {
      * @param a Account
      * @return Answer from Server.
      */
-    public static String getVideosByAccount(Account a) {
+    public static String getVideos(Account a) {
         String json = a.getAsJson();
         Form f = new Form();
-        f.param(PARAM, json);
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(HOST).path("webservice").path("getVideosByAccount");
-        System.out.println(webTarget.getUri());
-        Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+        f.param(ACCOUNT, json);
 
-        return response.readEntity(String.class);
+        Response response = post(f, "getVideos");
+        return (response == null) ? FAILURE : response.readEntity(String.class);
     }
 
     /**
@@ -55,14 +65,11 @@ public class ServerProxy {
     public static String videoInfo(int videoID, Account a) {
         String json = a.getAsJson();
         Form f = new Form();
-        f.param(PARAM, json);
-        f.param("videoId", Integer.toString(videoID));
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(HOST).path("webservice").path("videoInfo");
-        System.out.println(webTarget.getUri());
-        Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+        f.param(ACCOUNT, json);
+        f.param(VIDEO_ID, Integer.toString(videoID));
 
-        return response.readEntity(String.class);
+        Response response = post(f, "videoInfo");
+        return (response == null) ? FAILURE : response.readEntity(String.class);
     }
 
     /**
@@ -75,23 +82,25 @@ public class ServerProxy {
     public static File videoDownload(int videoID, Account a) {
         String json = a.getAsJson();
         Form f = new Form();
-        f.param(PARAM, json);
-        f.param("videoId", Integer.toString(videoID));
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(HOST).path("webservice").path("videoDownload");
-        Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE),Response.class);
+        f.param(ACCOUNT, json);
+        f.param(VIDEO_ID, Integer.toString(videoID));
+
+        Response response = post(f, "videoDownload");
+        if (response == null)
+            return null;
+
         InputStream inputStream = response.readEntity(InputStream.class);
-        File downloadfile = null;
+        File downloadFile = null;
         if (response.getStatus() == 200) {
             //TODO: more user downloads
-            downloadfile = new File("C://Users/chris/Desktop/PSE/pcc-imp-webinterface/temp/tVideo.avi");
+            downloadFile = new File("tVideo.avi");
             try {
-                Files.copy(inputStream, downloadfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(inputStream, downloadFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return downloadfile;
+        return downloadFile;
     }
 
     /**
@@ -104,16 +113,11 @@ public class ServerProxy {
     public static String videoDelete(int videoID, Account a) {
         String json = a.getAsJson();
         Form f = new Form();
-        f.param(PARAM, json);
-        String string = Integer.toString(videoID);
-        System.out.println(string);
-        f.param("id", string);
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(HOST).path("webservice").path("videoDelete");
-        System.out.println(webTarget.getUri());
-        Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+        f.param(ACCOUNT, json);
+        f.param(VIDEO_ID, Integer.toString(videoID));
 
-        return response.readEntity(String.class);
+        Response response = post(f, "videoDelete");
+        return (response == null) ? FAILURE : response.readEntity(String.class);
     }
 
     /**
@@ -125,13 +129,10 @@ public class ServerProxy {
     public static String authenticateUser(Account a) {
         String json = a.getAsJson();
         Form f = new Form();
-        f.param(PARAM, json);
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(HOST).path("webservice").path("authenticate");
-        System.out.println(webTarget.getUri());
-        Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+        f.param(ACCOUNT, json);
 
-        return response.readEntity(String.class);
+        Response response = post(f, "authenticate");
+        return (response == null) ? FAILURE : response.readEntity(String.class);
     }
 
     /**
@@ -144,14 +145,11 @@ public class ServerProxy {
     public static String createAccount(Account a, UUID id) {
         String json = a.getAsJson();
         Form f = new Form();
-        f.param(PARAM, json);
-        f.param("uuid", id.toString());
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(HOST).path("webservice").path("createAccount");
-        System.out.println(webTarget.getUri());
-        Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+        f.param(ACCOUNT, json);
+        f.param(UUID, id.toString());
 
-        return response.readEntity(String.class);
+        Response response = post(f, "createAccount");
+        return (response == null) ? FAILURE : response.readEntity(String.class);
     }
 
     /**
@@ -165,14 +163,11 @@ public class ServerProxy {
         String json = oldAccount.getAsJson();
         String newJson = newAccount.getAsJson();
         Form f = new Form();
-        f.param(PARAM, json);
-        f.param("newAccount", newJson);
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(HOST).path("webservice").path("changeAccount");
-        System.out.println(webTarget.getUri());
-        Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+        f.param(ACCOUNT, json);
+        f.param(NEW_ACCOUNT, newJson);
 
-        return response.readEntity(String.class);
+        Response response = post(f, "changeAccount");
+        return (response == null) ? FAILURE : response.readEntity(String.class);
     }
 
     /**
@@ -184,13 +179,21 @@ public class ServerProxy {
     public static String deleteAccount(Account a) {
         String json = a.getAsJson();
         Form f = new Form();
-        f.param(PARAM, json);
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(HOST).path("webservice").path("deleteAccount");
-        System.out.println(webTarget.getUri());
-        Response response = webTarget.request().post(Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+        f.param(ACCOUNT, json);
 
-        return response.readEntity(String.class);
+        Response response = post(f, "deleteAccount");
+        return (response == null) ? FAILURE : response.readEntity(String.class);
     }
 
+
+    private static Response post(Form f, String path) {
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(HOST).path("webservice").path(path);
+        try {
+            return webTarget.request().post(
+                    Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
+        } catch (ProcessingException e) {
+            return null;
+        }
+    }
 }
