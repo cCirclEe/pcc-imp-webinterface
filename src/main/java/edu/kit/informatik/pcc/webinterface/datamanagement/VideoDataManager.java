@@ -2,13 +2,7 @@ package edu.kit.informatik.pcc.webinterface.datamanagement;
 
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FileResource;
-import com.vaadin.server.Sizeable;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;
-import edu.kit.informatik.pcc.webinterface.gui.MyUI;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,49 +26,26 @@ public class VideoDataManager {
     //attributes
     private static LinkedList<Video> videos = null;
     private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
-    private static MyUI ui;
-
-    //methods
-
-    public static void setUI(MyUI myui) {
-        ui = myui;
-    }
 
     /**
      * This method sends a request to download a video via the ServerProxy.
      *
      * @param videoID the id of the video to download
      */
-    public static void downloadVideo(int videoID) {
+    public static FileDownloader downloadVideo(int videoID) {
         File file = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
 
         if (file == null) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("videoDownloadFail"))
                     .open();
-            return;
+            return null;
         }
 
         //TODO: implement download !!!!
         //TODO: This is view work not manager work -> make method in video view!!!
         FileResource resource = new FileResource(file);
-
-        FileDownloader fileDownloader = new FileDownloader(resource);
-        Window subWindow = new Window("Bestätigen Sie den Download");
-        subWindow.setHeight("100px");
-        subWindow.setWidth(300, Sizeable.Unit.PIXELS);
-        VerticalLayout subLayout = new VerticalLayout();
-        Button button = new Button("Download starten");
-        button.addClickListener(
-                (Button.ClickListener) event -> Notification.show("you clicked it")
-        );
-        subLayout.setSizeFull();
-        subLayout.setMargin(true);
-        subLayout.addComponent(button);
-        fileDownloader.extend(button);
-        subWindow.setContent(subLayout);
-        subWindow.center();
-        ui.addWindow(subWindow);
+        return new FileDownloader(resource);
     }
 
     /**

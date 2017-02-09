@@ -5,7 +5,7 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.VerticalLayout;
 
 /**
- * Created by chris on 17.01.2017.
+ * @author Josh Romanowski, Christoph Hörtnagl
  */
 public class VideoView extends VerticalLayout implements View{
 
@@ -22,6 +22,7 @@ public class VideoView extends VerticalLayout implements View{
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
-
+        videoTable.update();
     }
+
 }

@@ -10,7 +10,6 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
-import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
 import edu.kit.informatik.pcc.webinterface.gui.navigation.Menu;
 
 import javax.servlet.annotation.WebServlet;
@@ -48,11 +47,7 @@ public class MyUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
 
         //this.setSizeUndefined();
-
-        VideoDataManager.setUI(this);
-
         initializeGraphicalComponents();
-
     }
 
 
@@ -67,7 +62,6 @@ public class MyUI extends UI {
         background.setSizeFull();
 
         AccountDataManager.setAccount(null);
-        VideoDataManager.removeVideos();
 
         LoginView login = new LoginView(this);
         background.setContent(login);

@@ -35,12 +35,10 @@ public class AccountDataManager {
      * @return true on success false else
      */
     public static boolean createAccount(String mail, String password) {
-        String ret = "";
 
         UUID id = UUID.randomUUID();
         account = new Account(mail, password);
-        ret = ServerProxy.createAccount(account,id);
-        System.out.println(ret);
+        String ret = ServerProxy.createAccount(account, id);
 
         switch (ret) {
             case SUCCESS:
@@ -76,14 +74,12 @@ public class AccountDataManager {
         String text = messages.getString("mailText");
         String subject = messages.getString("mailSubject");
         String link = "http://laubenstone.de:2222/webservice/verifyAccount?uuid=" + id.toString();
-        text = text + link;
+        text += link;
         String to = account.getMail();
         String from = messages.getString("mail");
         try {
             MailService.send(from, to, subject, text);
-        } catch (EmailException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (EmailException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -97,10 +93,8 @@ public class AccountDataManager {
      * @return true on success false else
      */
     public static boolean authenticateAccount(String mail, String password) {
-        String ret = "";
-
         account = new Account(mail, password);
-        ret = ServerProxy.authenticateUser(account);
+        String ret = ServerProxy.authenticateUser(account);
 
         switch (ret) {
             case "NOT EXISTING":
