@@ -37,7 +37,7 @@ public class VideoDataManagerTest {
         Account a = new Account("mail","password");
         AccountDataManager.setAccount(a);
         String testVideos = "[{\"videoInfo\":{\"name\":\"input\",\"id\":\"165\"}},{\"videoInfo\":{\"name\":\"input2\",\"id\":\"166\"}}]";
-        when(ServerProxy.getVideosByAccount(a)).thenReturn(testVideos);
+        when(ServerProxy.getVideos(a)).thenReturn(testVideos);
         when(ServerProxy.videoInfo(165,a)).thenReturn("info1");
         when(ServerProxy.videoInfo(166,a)).thenReturn("info2");
 

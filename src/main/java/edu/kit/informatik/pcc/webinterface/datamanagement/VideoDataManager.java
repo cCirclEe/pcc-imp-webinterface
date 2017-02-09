@@ -46,10 +46,7 @@ public class VideoDataManager {
      * @param videoID the id of the video to download
      */
     public static void downloadVideo(int videoID) {
-        String ret = "";
-        File file = new File("");
-
-        file = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
+        File file = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
 
         if (file == null) {
             MessageBox.createInfo()
@@ -59,6 +56,7 @@ public class VideoDataManager {
         }
 
         //TODO: implement download !!!!
+        //TODO: This is view work not manager work -> make method in video view!!!
         FileResource resource = new FileResource(file);
 
         FileDownloader fileDownloader = new FileDownloader(resource);
@@ -85,31 +83,25 @@ public class VideoDataManager {
      * @param videoID the id of the video to delete
      */
     public static void deleteVideo(int videoID) {
-        String ret = "";
-
-        ret = ServerProxy.videoDelete(videoID, AccountDataManager.getAccount());
-        System.out.println(ret);
+        String ret = ServerProxy.videoDelete(videoID, AccountDataManager.getAccount());
 
         switch (ret) {
-            case WRONGACCOUNT:
-                MessageBox.createInfo()
-                        .withMessage(errors.getString("videoDeleteFail"))
-                        .open();
-                return;
-            case FAILURE:
-                MessageBox.createInfo()
-                        .withMessage(errors.getString("videoDeleteFail"))
-                        .open();
-                return;
             case SUCCESS:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("videoDeleted"))
                         .open();
                 break;
+            case WRONGACCOUNT:
+                MessageBox.createInfo()
+                        .withMessage(errors.getString("wrongAccount"))
+                        .open();
+                break;
+            case FAILURE:
             default:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("videoDeleteFail"))
                         .open();
+                return;
         }
 
         updateVideosAndInfo();
@@ -127,17 +119,27 @@ public class VideoDataManager {
         }
     }
 
+    public static LinkedList<Video> getVideos() {
+        updateVideosAndInfo();
+        return videos;
+    }
+
+    public static void removeVideos() {
+        VideoDataManager.videos = null;
+    }
+
+    // Helper Methods
+
     /**
      * This method fetches the videos from the Server via ServerProxy
      */
     private static String getVideosFromServer() {
-        String ret = "";
-        ret = ServerProxy.getVideosByAccount(AccountDataManager.getAccount());
+        String ret = ServerProxy.getVideos(AccountDataManager.getAccount());
 
         switch (ret) {
             case WRONGACCOUNT:
                 MessageBox.createInfo()
-                        .withMessage(errors.getString("getVideoFail"))
+                        .withMessage(errors.getString("wrongAccount"))
                         .open();
                 break;
             case FAILURE:
@@ -156,8 +158,8 @@ public class VideoDataManager {
      *
      * @param videos the String which contains the videos
      */
-    private static LinkedList createVideoList(String videos) {
-        LinkedList<Video> videoList = new LinkedList();
+    private static LinkedList<Video> createVideoList(String videos) {
+        LinkedList<Video> videoList = new LinkedList<>();
 
         JSONArray jsonArray = new JSONArray(videos);
 
@@ -166,7 +168,7 @@ public class VideoDataManager {
             String name = jsonObject.getString("name");
             int id = jsonObject.getInt("id");
 
-            Video video = new Video(name, id, "");
+            Video video = new Video(name, id);
             videoList.add(video);
         }
 
@@ -202,11 +204,14 @@ public class VideoDataManager {
         switch (response) {
             case WRONGACCOUNT:
                 MessageBox.createInfo()
-                        .withMessage(errors.getString("infoFail"))
+                        .withMessage(errors.getString("wrongAccount"))
                         .open();
-                ret = errors.getString("noMeta");
+                ret = errors.getString("wrongAccount");
                 break;
             case FAILURE:
+                MessageBox.createInfo()
+                        .withMessage(errors.getString("noMeta"))
+                        .open();
                 ret = errors.getString("noMeta");
                 break;
             default:
@@ -214,15 +219,6 @@ public class VideoDataManager {
         }
 
         return ret;
-    }
-
-    public static LinkedList<Video> getVideos() {
-        updateVideosAndInfo();
-        return videos;
-    }
-
-    public static void removeVideos() {
-        VideoDataManager.videos = null;
     }
 
     private static String parseMetaJSON(String ret) {
@@ -243,12 +239,12 @@ public class VideoDataManager {
             return "";
         }
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("Date: " + date + "\n");
-        builder.append("Trigger type: " + triggerType + "\n");
-        builder.append("G-Force (X): " + gForceX + "\n");
-        builder.append("G-Force (Y): " + gForceY + "\n");
-        builder.append("G-Force (Z): " + gForceZ);
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Date: ").append(date).append("\n");
+        builder.append("Trigger type: ").append(triggerType).append("\n");
+        builder.append("G-Force (X): ").append(gForceX).append("\n");
+        builder.append("G-Force (Y): ").append(gForceY).append("\n");
+        builder.append("G-Force (Z): ").append(gForceZ);
         return builder.toString();
     }
 }

@@ -43,7 +43,7 @@ public class Account {
             json.put(JSON_KEY_MAIL, this.mail);
             json.put(JSON_KEY_PASSWORD, this.password);
         } catch (JSONException e) {
-            e.printStackTrace();
+            return "";
         }
         return json.toString();
     }

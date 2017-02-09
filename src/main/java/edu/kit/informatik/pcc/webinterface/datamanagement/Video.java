@@ -12,6 +12,10 @@ public class Video {
     private String info;
 
     //constructors
+    public Video(String name, int id) {
+        this(name, id, "");
+    }
+
     public Video(String name, int id, String info) {
         this.name = name;
         this.id = id;

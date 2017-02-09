@@ -164,12 +164,7 @@ public class AccountDataManager {
         switch (ret) {
             case WRONGACCOUNT:
                 MessageBox.createInfo()
-                        .withMessage(errors.getString("changeFail"))
-                        .open();
-                break;
-            case FAILURE:
-                MessageBox.createInfo()
-                        .withMessage(errors.getString("changeFail"))
+                        .withMessage(errors.getString("wrongAccount"))
                         .open();
                 break;
             case SUCCESS:
@@ -177,6 +172,7 @@ public class AccountDataManager {
                         .withMessage(errors.getString("accountChanged"))
                         .open();
                 return true;
+            case FAILURE:
             default:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("changeFail"))
@@ -192,7 +188,6 @@ public class AccountDataManager {
      * @return true on success false else
      */
     public static boolean deleteAccount() {
-        String ret = "";
 
         if (account == null) {
             MessageBox.createInfo()
@@ -201,17 +196,12 @@ public class AccountDataManager {
             return false;
         }
 
-        ret = ServerProxy.deleteAccount(account);
+        String ret = ServerProxy.deleteAccount(account);
 
         switch (ret) {
             case WRONGACCOUNT:
                 MessageBox.createInfo()
-                        .withMessage(errors.getString("deleteFail"))
-                        .open();
-                break;
-            case FAILURE:
-                MessageBox.createInfo()
-                        .withMessage(errors.getString("deleteFail"))
+                        .withMessage(errors.getString("wrongAccount"))
                         .open();
                 break;
             case SUCCESS:
@@ -220,6 +210,7 @@ public class AccountDataManager {
                         .open();
                 account = null;
                 return true;
+            case FAILURE:
             default:
                 System.out.println(ret);
                 MessageBox.createInfo()
