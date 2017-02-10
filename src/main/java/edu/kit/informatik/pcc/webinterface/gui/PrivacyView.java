@@ -2,7 +2,9 @@ package edu.kit.informatik.pcc.webinterface.gui;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Sizeable;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
 import java.util.ResourceBundle;
@@ -16,8 +18,14 @@ public class PrivacyView extends VerticalLayout implements View {
     private ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
 
     public PrivacyView() {
+        this.setSpacing(true);
+        this.setMargin(true);
+        this.setSizeFull();
+        Panel panel = new Panel(messages.getString(viewID + "Privacy"));
+        panel.setWidth(50, Sizeable.Unit.PERCENTAGE);
         Label label = new Label(messages.getString(viewID + "Text"));
-        this.addComponent(label);
+        panel.setContent(label);
+        this.addComponent(panel);
     }
 
     @Override

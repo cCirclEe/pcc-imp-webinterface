@@ -19,6 +19,7 @@ public class AccountDataManager {
     private static final String SUCCESS = "SUCCESS";
     private static final String FAILURE = "FAILURE";
     private static final String WRONGACCOUNT = "WRONG ACCOUNT";
+    private static final int PASSWORDMIN = 6;
     //attributes
     private static Account account = null;
     private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
@@ -40,6 +41,13 @@ public class AccountDataManager {
         if (!MailService.isValidEmailAddress(mail)) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("noLegitMail"))
+                    .open();
+            return false;
+        }
+
+        if (password.length() < PASSWORDMIN) {
+            MessageBox.createInfo()
+                    .withMessage(errors.getString("toShortPassword"))
                     .open();
             return false;
         }
@@ -149,6 +157,13 @@ public class AccountDataManager {
         if (!MailService.isValidEmailAddress(mailNew)) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("noLegitMail"))
+                    .open();
+            return false;
+        }
+
+        if (passwordNew.length() < PASSWORDMIN) {
+            MessageBox.createInfo()
+                    .withMessage(errors.getString("toShortPassword"))
                     .open();
             return false;
         }

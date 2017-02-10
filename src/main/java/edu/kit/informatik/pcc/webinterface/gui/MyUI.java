@@ -42,7 +42,6 @@ public class MyUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         this.setSizeFull();
-        //this.setSizeUndefined();
         initializeGraphicalComponents();
     }
 
@@ -51,7 +50,6 @@ public class MyUI extends UI {
 
     public void initializeGraphicalComponents() {
 
-        //CustomLayout loginLayout = new CustomLayout("login.html");
         background = new HorizontalLayout();
         menuArea = new VerticalLayout();
         contentArea = new VerticalLayout();
@@ -69,6 +67,7 @@ public class MyUI extends UI {
         //set User after login and add menu to the view
         //set up the menu
         background = new HorizontalLayout();
+        background.setHeight(100, Unit.PERCENTAGE);
         setContent(background);
         contentArea.setSizeFull();
 
@@ -88,12 +87,11 @@ public class MyUI extends UI {
         menu.addLogout();
 
         menuArea.addComponent(menu);
-        menuArea.setWidth(300, Unit.PIXELS);
-        menuArea.setHeight(800, Unit.PIXELS);
+        //menuArea.setWidth(200, Unit.PIXELS);
+        menuArea.setHeight(100, Unit.PERCENTAGE);
 
         menu.addUserMenu(AccountDataManager.getAccount().getMail());
         menu.setSizeUndefined();
-        contentArea.setSizeUndefined();
 
         background.addComponent(menuArea);
         background.addComponent(contentArea);

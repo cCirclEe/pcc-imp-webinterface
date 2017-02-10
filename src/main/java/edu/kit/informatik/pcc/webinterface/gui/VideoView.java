@@ -15,6 +15,7 @@ public class VideoView extends VerticalLayout implements View{
 
     //constructors
     public VideoView() {
+        this.setSizeFull();
         videoTable = new VideoTable();
         this.addComponent(videoTable);
     }

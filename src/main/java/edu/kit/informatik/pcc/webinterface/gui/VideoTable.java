@@ -25,6 +25,7 @@ public class VideoTable extends Table {
 
     public VideoTable () {
         super();
+        this.setSizeFull();
     }
 
     public void update() {

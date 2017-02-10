@@ -2,10 +2,7 @@ package edu.kit.informatik.pcc.webinterface.gui;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
 
 import java.util.ResourceBundle;
@@ -20,20 +17,22 @@ public class AccountView extends VerticalLayout implements View{
     public final static String viewID = "AccountView";
     private Label mailLabel;
     private TextField mailChangeField;
-    private TextField passwordChangeField;
-    private TextField passwordField;
+    private PasswordField passwordChangeField;
+    private PasswordField passwordField;
     private Button changeButton;
     private Button deleteButton;
 
     //constructors
     public AccountView(MyUI ui) {
         //initialization
+        this.setSpacing(true);
+        this.setMargin(true);
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
         String mail = AccountDataManager.getAccount().getMail();
         mailLabel = new Label(mail);
         mailChangeField = new TextField(messages.getString(viewID + "mailChangeField"));
-        passwordChangeField = new TextField(messages.getString(viewID + "passwordChangeField"));
-        passwordField = new TextField(messages.getString(viewID + "passwordField"));
+        passwordChangeField = new PasswordField(messages.getString(viewID + "passwordChangeField"));
+        passwordField = new PasswordField(messages.getString(viewID + "passwordField"));
         changeButton = new Button(messages.getString(viewID + "changeButton"));
         deleteButton = new Button(messages.getString(viewID + "deleteButton"));
 
