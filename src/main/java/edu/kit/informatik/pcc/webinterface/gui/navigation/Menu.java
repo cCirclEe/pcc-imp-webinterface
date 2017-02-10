@@ -1,6 +1,7 @@
 package edu.kit.informatik.pcc.webinterface.gui.navigation;
 
 import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.MenuBar.MenuItem;
 import edu.kit.informatik.pcc.webinterface.gui.MyUI;
@@ -8,13 +9,12 @@ import edu.kit.informatik.pcc.webinterface.gui.MyUI;
 /**
  * Created by chris on 17.01.2017.
  * The Menu class shows Buttons to navigate on the website.
- *
  */
 public class Menu extends VerticalLayout {
 
     //attributes
     private MyUI ui;
-    private HorizontalLayout menuItemsLayout;
+    private CssLayout menuItemsLayout;
     private MenuBar userMenu;
     private MenuItem userItem;
     private Label menuCaption;
@@ -23,11 +23,19 @@ public class Menu extends VerticalLayout {
     public Menu(MyUI myUI) {
         super();
         this.ui = myUI;
-        menuItemsLayout = new HorizontalLayout();
+        menuItemsLayout = new CssLayout();
         userMenu = new MenuBar();
 
-        menuCaption = new Label("Menu");
-        this.addComponent(menuCaption);
+        this.setPrimaryStyleName("valo-menu");
+
+        menuCaption = new Label("Menu", ContentMode.HTML);
+        menuCaption.setSizeUndefined();
+        HorizontalLayout logoWrapper = new HorizontalLayout(menuCaption);
+        logoWrapper.setComponentAlignment(menuCaption, Alignment.MIDDLE_CENTER);
+        logoWrapper.addStyleName("valo-menu-title");
+        this.addComponent(logoWrapper);
+
+        userMenu.addStyleName("user-menu");
 
         userItem = userMenu.addItem("", null);
         userItem.setIcon(FontAwesome.MALE);
@@ -48,6 +56,7 @@ public class Menu extends VerticalLayout {
                 ui.getNavigator().navigateTo(viewID);
             }
         });
+        button.setPrimaryStyleName("valo-menu-item");
         menuItemsLayout.addComponent(button);
     }
 
@@ -65,6 +74,7 @@ public class Menu extends VerticalLayout {
                 ui.logout();
             }
         });
+        button.setPrimaryStyleName("valo-menu-item");
         menuItemsLayout.addComponent(button);
     }
 }

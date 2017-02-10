@@ -10,11 +10,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 /**
@@ -26,8 +22,8 @@ import java.util.UUID;
  */
 public class ServerProxy {
 
-    private static final String HOST = "http://laubenstone.de:2222/";
-    //private static final String HOST = "http://localhost:2222/";
+    //private static final String HOST = "http://laubenstone.de:2222/";
+    private static final String HOST = "http://localhost:2222/";
 
     //status strings
     //TODO: Change to server connection failure -> handle
@@ -79,7 +75,7 @@ public class ServerProxy {
      * @param a Account to which the video is referred
      * @return Answer from the Server
      */
-    public static File videoDownload(int videoID, Account a) {
+    public static InputStream videoDownload(int videoID, Account a) {
         String json = a.getAsJson();
         Form f = new Form();
         f.param(ACCOUNT, json);
@@ -89,18 +85,7 @@ public class ServerProxy {
         if (response == null)
             return null;
 
-        InputStream inputStream = response.readEntity(InputStream.class);
-        File downloadFile = null;
-        if (response.getStatus() == 200) {
-            //TODO: more user downloads
-            downloadFile = new File("tVideo.avi");
-            try {
-                Files.copy(inputStream, downloadFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return downloadFile;
+        return response.readEntity(InputStream.class);
     }
 
     /**

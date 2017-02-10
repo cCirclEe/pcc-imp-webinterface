@@ -15,11 +15,9 @@ import java.util.ResourceBundle;
  */
 public class LoginView extends VerticalLayout implements View {
 
-    public final static String viewID = "LoginView";
+    private final static String viewID = "LoginView";
     private TextField mailField;
     private PasswordField passwordField;
-    private Button loginButton;
-    private Button registerButton;
 
     //Constructor
     public LoginView(MyUI ui) {
@@ -30,8 +28,8 @@ public class LoginView extends VerticalLayout implements View {
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
         mailField = new TextField(messages.getString(viewID + "mailField"));
         passwordField = new PasswordField(messages.getString(viewID + "passwordField"));
-        loginButton = new Button(messages.getString(viewID + "loginButton"));
-        registerButton = new Button(messages.getString(viewID + "registerButton"));
+        Button loginButton = new Button(messages.getString(viewID + "loginButton"));
+        Button registerButton = new Button(messages.getString(viewID + "registerButton"));
 
         loginButton.addClickListener(
                 (ClickListener) event -> {

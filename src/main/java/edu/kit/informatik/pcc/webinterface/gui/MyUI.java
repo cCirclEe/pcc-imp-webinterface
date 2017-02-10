@@ -5,17 +5,13 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.CustomLayout;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
 import edu.kit.informatik.pcc.webinterface.gui.navigation.Menu;
 
 import javax.servlet.annotation.WebServlet;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ResourceBundle;
 
 /**
@@ -30,8 +26,7 @@ public class MyUI extends UI {
 
     private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
     //attributes
-    private Panel background;
-    private CustomLayout back;
+    private HorizontalLayout background;
     private VerticalLayout menuArea;
     private VerticalLayout contentArea;
     private Menu menu;
@@ -45,7 +40,7 @@ public class MyUI extends UI {
      */
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-
+        this.setSizeFull();
         //this.setSizeUndefined();
         initializeGraphicalComponents();
     }
@@ -56,32 +51,24 @@ public class MyUI extends UI {
     public void initializeGraphicalComponents() {
 
         //CustomLayout loginLayout = new CustomLayout("login.html");
-        background = new Panel();
+        background = new HorizontalLayout();
         menuArea = new VerticalLayout();
         contentArea = new VerticalLayout();
-        background.setSizeFull();
 
         AccountDataManager.setAccount(null);
-
         LoginView login = new LoginView(this);
-        background.setContent(login);
 
+        background.addComponent(login);
+        background.setSizeFull();
         setContent(background);
     }
 
     public void login() {
         //set User after login and add menu to the view
         //set up the menu
-        background = new Panel();
+        background = new HorizontalLayout();
         setContent(background);
-
-        File file = new File("HTMLExample/layouts/index.html");
-        try {
-            back = new CustomLayout(new FileInputStream(file));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        back.setSizeUndefined();
+        contentArea.setSizeFull();
 
         navigator = new Navigator(this, contentArea);
         navigator.addView(AccountView.viewID, new AccountView(this));
@@ -96,16 +83,15 @@ public class MyUI extends UI {
         menu.addLogout();
 
         menuArea.addComponent(menu);
+        menuArea.setWidth(20, Unit.PERCENTAGE);
+        menuArea.setHeight(100, Unit.PERCENTAGE);
 
         menu.addUserMenu(AccountDataManager.getAccount().getMail());
         menu.setSizeUndefined();
         contentArea.setSizeUndefined();
 
-        back.addComponent(menu, "menuArea");
-        back.addComponent(contentArea, "contentArea");
-
-        background.setContent(back);
-        background.setSizeUndefined();
+        background.addComponent(menuArea);
+        background.addComponent(contentArea);
 
         navigator.navigateTo(VideoView.viewID);
     }

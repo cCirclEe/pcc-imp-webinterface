@@ -1,14 +1,14 @@
 package edu.kit.informatik.pcc.webinterface.datamanagement;
 
 import com.vaadin.server.FileDownloader;
-import com.vaadin.server.FileResource;
+import com.vaadin.server.StreamResource;
 import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -33,9 +33,9 @@ public class VideoDataManager {
      * @param videoID the id of the video to download
      */
     public static FileDownloader downloadVideo(int videoID) {
-        File file = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
+        InputStream stream = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
 
-        if (file == null) {
+        if (stream == null) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("videoDownloadFail"))
                     .open();
@@ -44,9 +44,11 @@ public class VideoDataManager {
 
         //TODO: implement download !!!!
         //TODO: This is view work not manager work -> make method in video view!!!
-        FileResource resource = new FileResource(file);
+        StreamResource resource = new StreamResource(
+                (StreamResource.StreamSource) () -> stream, "nameHere.avi");
         return new FileDownloader(resource);
     }
+
 
     /**
      * This method sends a request to delete a video via the ServerProxy.
