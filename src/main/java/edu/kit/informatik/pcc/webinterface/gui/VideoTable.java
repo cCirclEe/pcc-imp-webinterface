@@ -2,11 +2,8 @@ package edu.kit.informatik.pcc.webinterface.gui;
 
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.Button;
+import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.datamanagement.Video;
 import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
@@ -75,12 +72,15 @@ public class VideoTable extends Table {
 
     private void showFileDownloadDialogue(FileDownloader fileDownloader) {
         Window subWindow = new Window();
-        subWindow.setSizeUndefined();
+        subWindow.setHeight(20, Unit.PERCENTAGE);
+        subWindow.setWidth(20, Unit.PERCENTAGE);
+        subWindow.setResizable(false);
         VerticalLayout subLayout = new VerticalLayout();
         Button button = new Button(messages.getString(tableId + "Download"));
-        subLayout.setSizeUndefined();
+        subLayout.setSizeFull();
         subLayout.setMargin(true);
         subLayout.addComponent(button);
+        subLayout.setComponentAlignment(button, Alignment.MIDDLE_CENTER);
         fileDownloader.extend(button);
         subWindow.setContent(subLayout);
         subWindow.center();

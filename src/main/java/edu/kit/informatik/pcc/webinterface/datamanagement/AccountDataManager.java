@@ -90,7 +90,7 @@ public class AccountDataManager {
         String link = "http://laubenstone.de:2222/webservice/verifyAccount?uuid=" + id.toString();
         text += link;
         String to = account.getMail();
-        String from = "privacycrashsam@gmail.com";
+        String from = messages.getString("mail");
         try {
             MailService.send(from, to, subject, text);
         } catch (EmailException | IOException e) {
