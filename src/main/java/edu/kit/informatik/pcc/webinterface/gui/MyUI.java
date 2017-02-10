@@ -88,8 +88,8 @@ public class MyUI extends UI {
         menu.addLogout();
 
         menuArea.addComponent(menu);
-        menuArea.setWidth(20, Unit.PERCENTAGE);
-        menuArea.setHeight(100, Unit.PERCENTAGE);
+        menuArea.setWidth(300, Unit.PIXELS);
+        menuArea.setHeight(800, Unit.PIXELS);
 
         menu.addUserMenu(AccountDataManager.getAccount().getMail());
         menu.setSizeUndefined();

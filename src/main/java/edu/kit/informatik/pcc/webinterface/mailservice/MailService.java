@@ -3,6 +3,8 @@ package edu.kit.informatik.pcc.webinterface.mailservice;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Properties;
@@ -13,6 +15,17 @@ import java.util.Properties;
  * This class has the method to send an email
  */
 public class MailService {
+
+    public static boolean isValidEmailAddress(String email) {
+        boolean result = true;
+        try {
+            InternetAddress emailAddr = new InternetAddress(email);
+            emailAddr.validate();
+        } catch (AddressException ex) {
+            result = false;
+        }
+        return result;
+    }
 
     /**
      * The method to send an email. It gets the SMTP properties from mail properties file.

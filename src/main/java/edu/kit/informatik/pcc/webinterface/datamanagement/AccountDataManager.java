@@ -37,19 +37,19 @@ public class AccountDataManager {
     public static boolean createAccount(String mail, String password) {
 
         UUID id = UUID.randomUUID();
+        if (!MailService.isValidEmailAddress(mail)) {
+            MessageBox.createInfo()
+                    .withMessage(errors.getString("noLegitMail"))
+                    .open();
+            return false;
+        }
         account = new Account(mail, password);
         String ret = ServerProxy.createAccount(account, id);
 
         switch (ret) {
             case SUCCESS:
-                if (startVerification(id)) {
-                    return true;
-                }
-                MessageBox.createInfo()
-                        .withMessage(errors.getString("noLegitMail"))
-                        .open();
-                deleteAccount();
-                return false;
+                startVerification(id);
+                return true;
             case FAILURE:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("createFail"))
@@ -82,7 +82,7 @@ public class AccountDataManager {
         String link = "http://laubenstone.de:2222/webservice/verifyAccount?uuid=" + id.toString();
         text += link;
         String to = account.getMail();
-        String from = messages.getString("mail");
+        String from = "privacycrashsam@gmail.com";
         try {
             MailService.send(from, to, subject, text);
         } catch (EmailException | IOException e) {
@@ -145,6 +145,13 @@ public class AccountDataManager {
      */
     public static boolean changeAccount(String password, String mailNew, String passwordNew) {
         String ret = "";
+
+        if (!MailService.isValidEmailAddress(mailNew)) {
+            MessageBox.createInfo()
+                    .withMessage(errors.getString("noLegitMail"))
+                    .open();
+            return false;
+        }
 
         if (account == null) {
             MessageBox.createInfo()
