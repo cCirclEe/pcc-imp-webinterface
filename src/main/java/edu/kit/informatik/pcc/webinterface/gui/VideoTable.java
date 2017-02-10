@@ -22,7 +22,7 @@ public class VideoTable extends Table {
     private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
     private LinkedList<Video> videos;
 
-    public VideoTable () {
+    public VideoTable() {
         super();
         this.setSizeFull();
     }
@@ -46,16 +46,10 @@ public class VideoTable extends Table {
     private void prepareEntries() {
         int i = 2;
 
-        for (Video v:videos) {
+        for (Video v : videos) {
             Button download = new Button(FontAwesome.DOWNLOAD);
-            download.addClickListener(
-                    (ClickListener) event -> {
-                        FileDownloader downloader = VideoDataManager.downloadVideo(v.getId());
-                        if (downloader != null) {
-                            showFileDownloadDialogue(downloader);
-                        }
-                    }
-            );
+            FileDownloader downloader = new FileDownloader(VideoDataManager.createDownloadFileProxy(v.getId(), v.getName()));
+            downloader.extend(download);
 
             Button info = new Button(FontAwesome.INFO);
             info.addClickListener(
@@ -73,7 +67,7 @@ public class VideoTable extends Table {
                         update();
                     }
             );
-            this.addItem(new Object[] {v.getName(), download, info , delete}, i);
+            this.addItem(new Object[]{v.getName(), download, info, delete}, i);
             i++;
         }
     }
@@ -84,19 +78,32 @@ public class VideoTable extends Table {
      * @param fileDownloader filedownloader
      */
     private void showFileDownloadDialogue(FileDownloader fileDownloader) {
+
         Window subWindow = new Window();
         subWindow.setHeight(20, Unit.PERCENTAGE);
         subWindow.setWidth(20, Unit.PERCENTAGE);
         subWindow.setResizable(false);
         VerticalLayout subLayout = new VerticalLayout();
+
         Button button = new Button(messages.getString(tableId + "Download"));
+        button.addClickListener(new ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+
+            }
+        });
+
         subLayout.setSizeFull();
         subLayout.setMargin(true);
         subLayout.addComponent(button);
         subLayout.setComponentAlignment(button, Alignment.MIDDLE_CENTER);
+
         fileDownloader.extend(button);
+
         subWindow.setContent(subLayout);
         subWindow.center();
+        subWindow.setClosable(true);
+        subWindow.setModal(true);
         getUI().addWindow(subWindow);
     }
 }

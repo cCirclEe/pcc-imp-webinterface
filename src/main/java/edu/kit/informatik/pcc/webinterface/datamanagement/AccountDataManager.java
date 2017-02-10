@@ -83,29 +83,7 @@ public class AccountDataManager {
         }
     }
 
-    /**
-     * This method starts the verification by creating a link and sending it
-     * per mail to the user.
-     *
-     *@param id the uuid of the account to verify.
-     */
-    private static boolean startVerification(UUID id) {
-        Boolean ret = true;
 
-        String text = messages.getString("mailText");
-        String subject = messages.getString("mailSubject");
-        String link = HOST + "webservice/verifyAccount?uuid=" + id.toString();
-        text += link;
-        String to = account.getMail();
-        String from = messages.getString("mail");
-        try {
-            MailService.send(from, to, subject, text);
-        } catch (EmailException | IOException e) {
-            e.printStackTrace();
-            ret = false;
-        }
-        return ret;
-    }
 
     /**
      * This method sends the given parameters to ServerProxy to authenticate.
@@ -251,15 +229,6 @@ public class AccountDataManager {
         return false;
     }
 
-    /**
-     * This method sends the verification mail to user.
-     *
-     * @param mail the user mail
-     */
-    private static void sendMail(String mail) {
-
-    }
-
     public static Account getAccount() {
         return account;
     }
@@ -268,8 +237,28 @@ public class AccountDataManager {
         AccountDataManager.account = account;
     }
 
-    public static void removeAccount() {
-        account = null;
+    /**
+     * This method starts the verification by creating a link and sending it
+     * per mail to the user.
+     *
+     * @param id the uuid of the account to verify.
+     */
+    private static boolean startVerification(UUID id) {
+        Boolean ret = true;
+
+        String text = messages.getString("mailText");
+        String subject = messages.getString("mailSubject");
+        String link = HOST + "webservice/verifyAccount?uuid=" + id.toString();
+        text += link;
+        String to = account.getMail();
+        String from = messages.getString("mail");
+        try {
+            MailService.send(from, to, subject, text);
+        } catch (EmailException | IOException e) {
+            e.printStackTrace();
+            ret = false;
+        }
+        return ret;
     }
 
 }

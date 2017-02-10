@@ -1,6 +1,5 @@
 package edu.kit.informatik.pcc.webinterface.datamanagement;
 
-import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
@@ -25,32 +24,32 @@ public class VideoDataManager {
     private static final String SUCCESS = "SUCCESS";
     private static final String FAILURE = "FAILURE";
     private static final String WRONGACCOUNT = "WRONG ACCOUNT";
+
     //attributes
     private static LinkedList<Video> videos = null;
     private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
 
     /**
-     * This method sends a request to download a video via the ServerProxy.
-     * Then creates a filedownloader and gives it back.
+     * Creates a file proxy that will provide the video file to download upon request.
+     * Therefore it loads the file from the server.
      *
-     * @param videoID the id of the video to download
-     * @return filedownloader
+     * @param videoID Video id of the file to download.
+     * @param videoName Video name of the file to download.
+     * @return Returns a StreamResources used for the downloader.
      */
-    public static FileDownloader downloadVideo(int videoID) {
-        InputStream stream = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
+    public static StreamResource createDownloadFileProxy(int videoID, String videoName) {
+        return new StreamResource((StreamResource.StreamSource) () -> {
+            InputStream stream = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
 
-        if (stream == null) {
-            MessageBox.createInfo()
-                    .withMessage(errors.getString("videoDownloadFail"))
-                    .open();
-            return null;
-        }
-
-        StreamResource resource = new StreamResource(
-                (StreamResource.StreamSource) () -> stream, "nameHere.avi");
-        return new FileDownloader(resource);
+            if (stream == null) {
+                MessageBox.createInfo()
+                        .withMessage(errors.getString("videoDownloadFail"))
+                        .open();
+                return null;
+            }
+            return stream;
+        }, videoName + Video.EXTENTION);
     }
-
 
     /**
      * This method sends a request to delete a video via the ServerProxy.

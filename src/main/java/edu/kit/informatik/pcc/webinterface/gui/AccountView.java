@@ -17,12 +17,9 @@ public class AccountView extends VerticalLayout implements View{
 
     //attributes
     public final static String viewID = "AccountView";
-    private Label mailLabel;
     private TextField mailChangeField;
     private PasswordField passwordChangeField;
     private PasswordField passwordField;
-    private Button changeButton;
-    private Button deleteButton;
 
     //constructors
     public AccountView(MyUI ui) {
@@ -31,20 +28,17 @@ public class AccountView extends VerticalLayout implements View{
         this.setMargin(true);
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
         String mail = AccountDataManager.getAccount().getMail();
-        mailLabel = new Label(mail);
+        Label mailLabel = new Label(mail);
         mailChangeField = new TextField(messages.getString(viewID + "mailChangeField"));
         passwordChangeField = new PasswordField(messages.getString(viewID + "passwordChangeField"));
         passwordField = new PasswordField(messages.getString(viewID + "passwordField"));
-        changeButton = new Button(messages.getString(viewID + "changeButton"));
-        deleteButton = new Button(messages.getString(viewID + "deleteButton"));
+        Button changeButton = new Button(messages.getString(viewID + "changeButton"));
+        Button deleteButton = new Button(messages.getString(viewID + "deleteButton"));
 
         changeButton.addClickListener(
-                new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        if (AccountDataManager.changeAccount(passwordField.getValue(), mailChangeField.getValue(), passwordChangeField.getValue())) {
-                            ui.initializeGraphicalComponents();
-                        }
+                (Button.ClickListener) event -> {
+                    if (AccountDataManager.changeAccount(passwordField.getValue(), mailChangeField.getValue(), passwordChangeField.getValue())) {
+                        ui.initializeGraphicalComponents();
                     }
                 }
         );

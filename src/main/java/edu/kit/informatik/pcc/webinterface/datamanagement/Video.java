@@ -8,6 +8,8 @@ package edu.kit.informatik.pcc.webinterface.datamanagement;
  */
 public class Video {
 
+    public static final String EXTENTION = ".avi";
+
     //attributes
     private String name;
     private int id;

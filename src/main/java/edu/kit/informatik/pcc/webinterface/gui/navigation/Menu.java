@@ -17,20 +17,18 @@ public class Menu extends VerticalLayout {
     //attributes
     private MyUI ui;
     private CssLayout menuItemsLayout;
-    private MenuBar userMenu;
     private MenuItem userItem;
-    private Label menuCaption;
 
     //constructors
     public Menu(MyUI myUI) {
         super();
         this.ui = myUI;
         menuItemsLayout = new CssLayout();
-        userMenu = new MenuBar();
+        MenuBar userMenu = new MenuBar();
 
         this.setPrimaryStyleName("valo-menu");
 
-        menuCaption = new Label("Menu", ContentMode.HTML);
+        Label menuCaption = new Label("Menu", ContentMode.HTML);
         menuCaption.setSizeUndefined();
         HorizontalLayout logoWrapper = new HorizontalLayout(menuCaption);
         logoWrapper.setComponentAlignment(menuCaption, Alignment.MIDDLE_CENTER);
@@ -58,12 +56,8 @@ public class Menu extends VerticalLayout {
      */
     public void addMenuItem(String caption, String viewID) {
 
-        Button button = new Button(caption, new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                ui.getNavigator().navigateTo(viewID);
-            }
-        });
+        Button button = new Button(caption,
+                (Button.ClickListener) clickEvent -> ui.getNavigator().navigateTo(viewID));
         button.setPrimaryStyleName("valo-menu-item");
         menuItemsLayout.addComponent(button);
     }
@@ -83,12 +77,7 @@ public class Menu extends VerticalLayout {
      * This method adds the option logout to the menu.
      */
     public void addLogout() {
-        Button button = new Button("Logout", new Button.ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-                ui.logout();
-            }
-        });
+        Button button = new Button("Logout", (Button.ClickListener) clickEvent -> ui.logout());
         button.setPrimaryStyleName("valo-menu-item");
         menuItemsLayout.addComponent(button);
     }
