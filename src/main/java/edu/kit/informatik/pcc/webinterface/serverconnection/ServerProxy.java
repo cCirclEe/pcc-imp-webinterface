@@ -22,8 +22,8 @@ import java.util.UUID;
  */
 public class ServerProxy {
 
-    //private static final String HOST = "http://laubenstone.de:2222/";
-    private static final String HOST = "http://localhost:2222/";
+    private static final String HOST = "http://laubenstone.de:2222/";
+    //private static final String HOST = "http://localhost:2222/";
 
     //status strings
     //TODO: Change to server connection failure -> handle
@@ -140,8 +140,8 @@ public class ServerProxy {
     /**
      * This method calls the server to change account date from old to new.
      *
-     * @param oldAccount
-     * @param newAccount
+     * @param oldAccount Account to change
+     * @param newAccount New Account Data
      * @return Answer form the server
      */
     public static String changeAccount(Account oldAccount, Account newAccount) {

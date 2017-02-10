@@ -9,9 +9,21 @@ import java.util.Properties;
 
 /**
  * Created by chris on 17.01.2017.
+ *
+ * This class has the method to send an email
  */
 public class MailService {
 
+    /**
+     * The method to send an email. It gets the SMTP properties from mail properties file.
+     *
+     * @param from    from mail
+     * @param to      to mail
+     * @param subject subject line
+     * @param text    mail body
+     * @throws EmailException
+     * @throws IOException
+     */
     public static void send(String from, String to, String subject, String text)
             throws EmailException, IOException {
 

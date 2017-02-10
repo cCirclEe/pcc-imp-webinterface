@@ -9,6 +9,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
+import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
 import edu.kit.informatik.pcc.webinterface.gui.navigation.Menu;
 
 import javax.servlet.annotation.WebServlet;
@@ -56,6 +57,7 @@ public class MyUI extends UI {
         contentArea = new VerticalLayout();
 
         AccountDataManager.setAccount(null);
+        VideoDataManager.removeVideos();
         LoginView login = new LoginView(this);
 
         background.addComponent(login);
@@ -73,13 +75,16 @@ public class MyUI extends UI {
         navigator = new Navigator(this, contentArea);
         navigator.addView(AccountView.viewID, new AccountView(this));
         navigator.addView(VideoView.viewID, new VideoView());
-
+        navigator.addView(PrivacyView.viewID, new PrivacyView());
+        navigator.addView(ImpressumView.viewID, new ImpressumView());
         navigator.setErrorView(new VideoView());
         this.setNavigator(navigator);
 
         menu = new Menu(this);
         menu.addMenuItem(messages.getString(AccountView.viewID), AccountView.viewID);
         menu.addMenuItem(messages.getString(VideoView.viewID), VideoView.viewID);
+        menu.addMenuItem(messages.getString(PrivacyView.viewID), PrivacyView.viewID);
+        menu.addMenuItem(messages.getString(ImpressumView.viewID), ImpressumView.viewID);
         menu.addLogout();
 
         menuArea.addComponent(menu);

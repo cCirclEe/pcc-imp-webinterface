@@ -42,8 +42,14 @@ public class AccountDataManager {
 
         switch (ret) {
             case SUCCESS:
-                startVerification(id);
-                return true;
+                if (startVerification(id)) {
+                    return true;
+                }
+                MessageBox.createInfo()
+                        .withMessage(errors.getString("noLegitMail"))
+                        .open();
+                deleteAccount();
+                return false;
             case FAILURE:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("createFail"))
@@ -68,8 +74,8 @@ public class AccountDataManager {
      * per mail to the user and per ServerProxy to the database.
      *
      */
-    private static void startVerification(UUID id) {
-        //TODO: verification
+    private static boolean startVerification(UUID id) {
+        Boolean ret = true;
 
         String text = messages.getString("mailText");
         String subject = messages.getString("mailSubject");
@@ -81,7 +87,9 @@ public class AccountDataManager {
             MailService.send(from, to, subject, text);
         } catch (EmailException | IOException e) {
             e.printStackTrace();
+            ret = false;
         }
+        return ret;
     }
 
     /**

@@ -15,13 +15,12 @@ import java.util.ResourceBundle;
  */
 public class LoginView extends VerticalLayout implements View {
 
-    private final static String viewID = "LoginView";
+    public final static String viewID = "LoginView";
     private TextField mailField;
     private PasswordField passwordField;
 
     //Constructor
     public LoginView(MyUI ui) {
-        this.setSizeFull();
         this.setSpacing(true);
 
         //initialization
@@ -48,12 +47,12 @@ public class LoginView extends VerticalLayout implements View {
                     }
                 }
         );
-        Label header = new Label("Pricacy Crash Cam");
+        Label header = new Label("Privacy Crash Cam");
         header.setSizeUndefined();
         header.setHeight(10, Unit.PERCENTAGE);
 
         this.addComponent(header);
-        this.setComponentAlignment(header, Alignment.TOP_CENTER);
+        this.setComponentAlignment(header, Alignment.MIDDLE_CENTER);
 
         Panel loginPanel = new Panel("Login");
         VerticalLayout content = new VerticalLayout();
