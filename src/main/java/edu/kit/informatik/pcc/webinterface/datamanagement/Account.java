@@ -37,6 +37,11 @@ public class Account {
         return password;
     }
 
+    /**
+     * A getter that gives you the Account attributes in a json object.
+     *
+     * @return the json object
+     */
     public String getAsJson() {
         JSONObject json = new JSONObject();
         try {

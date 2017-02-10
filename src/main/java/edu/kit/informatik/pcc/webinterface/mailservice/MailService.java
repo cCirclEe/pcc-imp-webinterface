@@ -12,7 +12,7 @@ import java.util.Properties;
 /**
  * Created by chris on 17.01.2017.
  *
- * This class has the method to send an email
+ * This class has the method to send an email and to check if an given mail is a legit mail.
  */
 public class MailService {
 

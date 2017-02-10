@@ -17,6 +17,8 @@ import java.util.ResourceBundle;
 /**
  * Created by chris on 17.01.2017.
  * This class handles all operations with video data.
+ *
+ * @author chris
  */
 public class VideoDataManager {
 
@@ -29,8 +31,10 @@ public class VideoDataManager {
 
     /**
      * This method sends a request to download a video via the ServerProxy.
+     * Then creates a filedownloader and gives it back.
      *
      * @param videoID the id of the video to download
+     * @return filedownloader
      */
     public static FileDownloader downloadVideo(int videoID) {
         InputStream stream = ServerProxy.videoDownload(videoID, AccountDataManager.getAccount());
@@ -42,8 +46,6 @@ public class VideoDataManager {
             return null;
         }
 
-        //TODO: implement download !!!!
-        //TODO: This is view work not manager work -> make method in video view!!!
         StreamResource resource = new StreamResource(
                 (StreamResource.StreamSource) () -> stream, "nameHere.avi");
         return new FileDownloader(resource);
@@ -92,6 +94,11 @@ public class VideoDataManager {
         }
     }
 
+    /**
+     * This method gives the videos in form of a list
+     *
+     * @return LinkedList of Videos
+     */
     public static LinkedList<Video> getVideos() {
         updateVideosAndInfo();
         return videos;
@@ -105,6 +112,8 @@ public class VideoDataManager {
 
     /**
      * This method fetches the videos from the Server via ServerProxy
+     *
+     * @return the videos as json string
      */
     private static String getVideosFromServer() {
         String ret = ServerProxy.getVideos(AccountDataManager.getAccount());
@@ -169,6 +178,7 @@ public class VideoDataManager {
      * This method sends a request to fetch a videos meta-info via the ServerProxy.
      *
      * @param videoID the id of the video to fetch the info from
+     * @return the metainfo as string
      */
     private static String getMetaInfFromServer(int videoID) {
         String response = ServerProxy.videoInfo(videoID, AccountDataManager.getAccount());
@@ -194,6 +204,11 @@ public class VideoDataManager {
         return ret;
     }
 
+    /**
+     * This method parses the meta object to a String
+     * @param ret meta info as json
+     * @return the created string
+     */
     private static String parseMetaJSON(String ret) {
         JSONObject obj = new JSONObject(ret);
         String date;

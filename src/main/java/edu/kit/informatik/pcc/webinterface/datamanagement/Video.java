@@ -3,6 +3,8 @@ package edu.kit.informatik.pcc.webinterface.datamanagement;
 /**
  * Created by chris on 17.01.2017.
  * The attributes of a video combined in one class for simpler useabilty.
+ *
+ * @author chris
  */
 public class Video {
 

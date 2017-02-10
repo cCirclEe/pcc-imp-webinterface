@@ -12,6 +12,8 @@ import java.util.UUID;
 /**
  * Created by chris on 17.01.2017.
  * The AccountDataManager manages all operations which contain account dates.
+ *
+ * @author chris
  */
 public class AccountDataManager {
 
@@ -19,6 +21,10 @@ public class AccountDataManager {
     private static final String SUCCESS = "SUCCESS";
     private static final String FAILURE = "FAILURE";
     private static final String WRONGACCOUNT = "WRONG ACCOUNT";
+    private static final String ACCOUNTEXISTS = "ACCOUNT EXISTS";
+    private static final String NOTEXISTING = "NOT EXISTING";
+    private static final String WRONGPASSWORD = "WRONG PASSWORD";
+    private static final String NOTVERIFIED = "NOT VERIFIED";
     private static final int PASSWORDMIN = 6;
     //attributes
     private static Account account = null;
@@ -63,7 +69,7 @@ public class AccountDataManager {
                         .withMessage(errors.getString("createFail"))
                         .open();
                 return false;
-            case "ACCOUNT EXISTS":
+            case ACCOUNTEXISTS:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("existingAccount"))
                         .open();
@@ -78,16 +84,17 @@ public class AccountDataManager {
     }
 
     /**
-     * This method starts the verification by creating uuid and sending it
-     * per mail to the user and per ServerProxy to the database.
+     * This method starts the verification by creating a link and sending it
+     * per mail to the user.
      *
+     *@param id the uuid of the account to verify.
      */
     private static boolean startVerification(UUID id) {
         Boolean ret = true;
 
         String text = messages.getString("mailText");
         String subject = messages.getString("mailSubject");
-        String link = "http://laubenstone.de:2222/webservice/verifyAccount?uuid=" + id.toString();
+        String link = HOST + "webservice/verifyAccount?uuid=" + id.toString();
         text += link;
         String to = account.getMail();
         String from = messages.getString("mail");
@@ -101,8 +108,7 @@ public class AccountDataManager {
     }
 
     /**
-     * This method fetches account data via ServerProxy and compares it to
-     * the given parameters.
+     * This method sends the given parameters to ServerProxy to authenticate.
      *
      * @param mail mail address
      * @param password password
@@ -113,17 +119,17 @@ public class AccountDataManager {
         String ret = ServerProxy.authenticateUser(account);
 
         switch (ret) {
-            case "NOT EXISTING":
+            case NOTEXISTING:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("noSuchAccount"))
                         .open();
                 break;
-            case "WRONG PASSWORD":
+            case WRONGPASSWORD:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("wrongPassword"))
                         .open();
                 break;
-            case "NOT VERIFIED":
+            case NOTVERIFIED:
                 MessageBox.createInfo()
                         .withMessage(errors.getString("notVerified"))
                         .open();
@@ -143,7 +149,7 @@ public class AccountDataManager {
     }
 
     /**
-     * This method checkes if the password is correct and then changes the account data
+     * This method checks if the password is correct and then changes the account data
      * via the ServerProxy.
      *
      * @param mailNew new mail address

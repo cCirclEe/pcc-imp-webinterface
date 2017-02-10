@@ -11,6 +11,10 @@ import java.util.ResourceBundle;
 
 /**
  * Created by chris on 17.01.2017.
+ *
+ * This View shows the Impressum.
+ *
+ * @author chris
  */
 public class ImpressumView extends VerticalLayout implements View {
 

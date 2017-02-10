@@ -34,8 +34,7 @@ public class MyUI extends UI {
     private Navigator navigator;
 
     /**
-     * This method is called whenever somebody openes the UI, we do the initialization of
-     * our prameters here.
+     * This method is called whenever somebody openes the UI, we start initialization here.
      *
      * @param vaadinRequest the request
      */
@@ -48,6 +47,9 @@ public class MyUI extends UI {
 
     //methods
 
+    /**
+     * Here we initialize all graphical components which are used for the start of the site.
+     */
     public void initializeGraphicalComponents() {
 
         background = new HorizontalLayout();
@@ -63,6 +65,9 @@ public class MyUI extends UI {
         setContent(background);
     }
 
+    /**
+     * Sets the site up after login. Creates Menu and Navigator and the loads the VideoView.
+     */
     public void login() {
         //set User after login and add menu to the view
         //set up the menu
@@ -99,6 +104,9 @@ public class MyUI extends UI {
         navigator.navigateTo(VideoView.viewID);
     }
 
+    /**
+     * Loads the site new.
+     */
     public void logout() {
         initializeGraphicalComponents();
     }

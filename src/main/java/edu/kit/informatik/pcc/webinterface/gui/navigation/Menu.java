@@ -9,6 +9,8 @@ import edu.kit.informatik.pcc.webinterface.gui.MyUI;
 /**
  * Created by chris on 17.01.2017.
  * The Menu class shows Buttons to navigate on the website.
+ *
+ * @author chris
  */
 public class Menu extends VerticalLayout {
 
@@ -48,6 +50,12 @@ public class Menu extends VerticalLayout {
 
     //methods
 
+    /**
+     * This method takes caption and a view so you can add it to the menu.
+     *
+     * @param caption caption
+     * @param viewID  the view to which the menu button will lead
+     */
     public void addMenuItem(String caption, String viewID) {
 
         Button button = new Button(caption, new Button.ClickListener() {
@@ -60,6 +68,10 @@ public class Menu extends VerticalLayout {
         menuItemsLayout.addComponent(button);
     }
 
+    /**
+     * This method adds teh user name to the menu.
+     * @param text username
+     */
     public void addUserMenu(String text) {
         if (text == null) {
             return;
@@ -67,6 +79,9 @@ public class Menu extends VerticalLayout {
         userItem.setText(text);
     }
 
+    /**
+     * This method adds the option logout to the menu.
+     */
     public void addLogout() {
         Button button = new Button("Logout", new Button.ClickListener() {
             @Override

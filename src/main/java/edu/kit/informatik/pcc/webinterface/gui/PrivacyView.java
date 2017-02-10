@@ -11,6 +11,10 @@ import java.util.ResourceBundle;
 
 /**
  * Created by chris on 17.01.2017.
+ *
+ * This class shows the privacy information.
+ *
+ * @author chris
  */
 public class PrivacyView extends VerticalLayout implements View {
 

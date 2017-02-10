@@ -10,6 +10,8 @@ import java.util.ResourceBundle;
 /**
  * Created by chris on 17.01.2017.
  * This View shows account data and options to change
+ *
+ * @author chris
  */
 public class AccountView extends VerticalLayout implements View{
 

@@ -5,6 +5,8 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.VerticalLayout;
 
 /**
+ * This view shows the video table.
+ *
  * @author Josh Romanowski, Christoph Hörtnagl
  */
 public class VideoView extends VerticalLayout implements View{

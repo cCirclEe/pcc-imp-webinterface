@@ -12,6 +12,8 @@ import java.util.ResourceBundle;
 /**
  * Created by chris on 17.01.2017.
  * The View which is showed after every start of the website.
+ *
+ * @author chris
  */
 public class LoginView extends VerticalLayout implements View {
 

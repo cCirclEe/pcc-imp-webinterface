@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Created by chris on 17.01.2017.
  *
- * This class handles all comunication with the Server.
+ * This class handles all communication with the Server.
  *
  * @author Josh Romanowski, Fabian Wenzel
  */

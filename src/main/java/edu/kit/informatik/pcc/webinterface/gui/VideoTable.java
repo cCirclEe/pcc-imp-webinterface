@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 /**
+ * This class creates a table of all videos and adds buttons for functionality.
+ *
  * @author Josh Romanowski, Christoph Hörtnagl
  */
 public class VideoTable extends Table {
@@ -25,6 +27,9 @@ public class VideoTable extends Table {
         this.setSizeFull();
     }
 
+    /**
+     * Creates the table.
+     */
     public void update() {
         videos = VideoDataManager.getVideos();
         this.addContainerProperty(messages.getString(tableId + "Name"), String.class, null);
@@ -35,6 +40,9 @@ public class VideoTable extends Table {
         prepareEntries();
     }
 
+    /**
+     * This method sets the table entries up.
+     */
     private void prepareEntries() {
         int i = 2;
 
@@ -70,6 +78,11 @@ public class VideoTable extends Table {
         }
     }
 
+    /**
+     * This method opens a window to confirm the download.
+     *
+     * @param fileDownloader filedownloader
+     */
     private void showFileDownloadDialogue(FileDownloader fileDownloader) {
         Window subWindow = new Window();
         subWindow.setHeight(20, Unit.PERCENTAGE);
