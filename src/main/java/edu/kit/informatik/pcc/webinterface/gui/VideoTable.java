@@ -2,8 +2,9 @@ package edu.kit.informatik.pcc.webinterface.gui;
 
 import com.vaadin.server.FileDownloader;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.ui.*;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Table;
 import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.datamanagement.Video;
 import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
@@ -31,7 +32,7 @@ public class VideoTable extends Table {
      * Creates the table.
      */
     public void update() {
-        videos = VideoDataManager.getVideos();
+        videos = VideoDataManager.getVideos(getSession());
         this.addContainerProperty(messages.getString(tableId + "Name"), String.class, null);
         this.addContainerProperty(messages.getString(tableId + "Download"), Button.class, null);
         this.addContainerProperty(messages.getString(tableId + "Info"), Button.class, null);
@@ -48,22 +49,21 @@ public class VideoTable extends Table {
 
         for (Video v : videos) {
             Button download = new Button(FontAwesome.DOWNLOAD);
-            FileDownloader downloader = new FileDownloader(VideoDataManager.createDownloadFileProxy(v.getId(), v.getName()));
+            FileDownloader downloader = new FileDownloader(
+                    VideoDataManager.createDownloadFileProxy(v.getId(), v.getName(), getSession()));
             downloader.extend(download);
 
             Button info = new Button(FontAwesome.INFO);
             info.addClickListener(
-                    (ClickListener) event -> {
-                        MessageBox.createInfo()
-                                .withMessage(v.getInfo())
-                                .open();
-                    }
+                    (ClickListener) event -> MessageBox.createInfo()
+                            .withMessage(v.getInfo())
+                            .open()
             );
 
             Button delete = new Button(FontAwesome.REMOVE);
             delete.addClickListener(
                     (ClickListener) event -> {
-                        VideoDataManager.deleteVideo(v.getId());
+                        VideoDataManager.deleteVideo(v.getId(), getSession());
                         update();
                     }
             );
@@ -72,38 +72,4 @@ public class VideoTable extends Table {
         }
     }
 
-    /**
-     * This method opens a window to confirm the download.
-     *
-     * @param fileDownloader filedownloader
-     */
-    private void showFileDownloadDialogue(FileDownloader fileDownloader) {
-
-        Window subWindow = new Window();
-        subWindow.setHeight(20, Unit.PERCENTAGE);
-        subWindow.setWidth(20, Unit.PERCENTAGE);
-        subWindow.setResizable(false);
-        VerticalLayout subLayout = new VerticalLayout();
-
-        Button button = new Button(messages.getString(tableId + "Download"));
-        button.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(Button.ClickEvent clickEvent) {
-
-            }
-        });
-
-        subLayout.setSizeFull();
-        subLayout.setMargin(true);
-        subLayout.addComponent(button);
-        subLayout.setComponentAlignment(button, Alignment.MIDDLE_CENTER);
-
-        fileDownloader.extend(button);
-
-        subWindow.setContent(subLayout);
-        subWindow.center();
-        subWindow.setClosable(true);
-        subWindow.setModal(true);
-        getUI().addWindow(subWindow);
-    }
 }

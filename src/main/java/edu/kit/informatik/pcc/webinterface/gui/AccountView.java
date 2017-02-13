@@ -3,6 +3,7 @@ package edu.kit.informatik.pcc.webinterface.gui;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
+import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
 import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
 
 import java.util.ResourceBundle;
@@ -27,7 +28,10 @@ public class AccountView extends VerticalLayout implements View{
         this.setSpacing(true);
         this.setMargin(true);
         ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
-        String mail = AccountDataManager.getAccount().getMail();
+
+        Account account = (Account) ui.getSession().getAttribute("account");
+
+        String mail = account.getMail();
         Label mailLabel = new Label(mail);
         mailChangeField = new TextField(messages.getString(viewID + "mailChangeField"));
         passwordChangeField = new PasswordField(messages.getString(viewID + "passwordChangeField"));
@@ -37,19 +41,18 @@ public class AccountView extends VerticalLayout implements View{
 
         changeButton.addClickListener(
                 (Button.ClickListener) event -> {
-                    if (AccountDataManager.changeAccount(passwordField.getValue(), mailChangeField.getValue(), passwordChangeField.getValue())) {
+                    if (AccountDataManager.changeAccount(
+                            passwordField.getValue(), mailChangeField.getValue(),
+                            passwordChangeField.getValue(), getSession())) {
                         ui.initializeGraphicalComponents();
                     }
                 }
         );
 
         deleteButton.addClickListener(
-                new Button.ClickListener() {
-                    @Override
-                    public void buttonClick(Button.ClickEvent event) {
-                        if (AccountDataManager.deleteAccount()) {
-                            ui.initializeGraphicalComponents();
-                        }
+                (Button.ClickListener) event -> {
+                    if (AccountDataManager.deleteAccount(getSession())) {
+                        ui.initializeGraphicalComponents();
                     }
                 }
         );

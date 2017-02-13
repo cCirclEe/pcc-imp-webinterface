@@ -9,7 +9,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
-import edu.kit.informatik.pcc.webinterface.datamanagement.AccountDataManager;
 import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
 import edu.kit.informatik.pcc.webinterface.gui.navigation.Menu;
 
@@ -31,7 +30,6 @@ public class MyUI extends UI {
     private HorizontalLayout background;
     private VerticalLayout menuArea;
     private VerticalLayout contentArea;
-    private Account account;
 
     /**
      * This method is called whenever somebody openes the UI, we start initialization here.
@@ -56,7 +54,6 @@ public class MyUI extends UI {
         menuArea = new VerticalLayout();
         contentArea = new VerticalLayout();
 
-        AccountDataManager.setAccount(null);
         VideoDataManager.removeVideos();
         LoginView login = new LoginView(this);
 
@@ -95,7 +92,9 @@ public class MyUI extends UI {
         //menuArea.setWidth(200, Unit.PIXELS);
         menuArea.setHeight(100, Unit.PERCENTAGE);
 
-        menu.addUserMenu(AccountDataManager.getAccount().getMail());
+        Account account = (Account) getSession().getAttribute("account");
+
+        menu.addUserMenu(account.getMail());
         menu.setSizeUndefined();
 
         background.addComponent(menuArea);

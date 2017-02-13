@@ -1,5 +1,6 @@
 package edu.kit.informatik.pcc.webinterface.datamanagement;
 
+import com.vaadin.server.VaadinSession;
 import de.steinwedel.messagebox.MessageBox;
 import edu.kit.informatik.pcc.webinterface.mailservice.MailService;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
@@ -27,7 +28,6 @@ public class AccountDataManager {
     private static final String NOTVERIFIED = "NOT VERIFIED";
     private static final int PASSWORDMIN = 6;
     //attributes
-    private static Account account = null;
     private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
     private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
 
@@ -41,7 +41,7 @@ public class AccountDataManager {
      * @param password password
      * @return true on success false else
      */
-    public static boolean createAccount(String mail, String password) {
+    public static boolean createAccount(String mail, String password, VaadinSession session) {
 
         UUID id = UUID.randomUUID();
         if (!MailService.isValidEmailAddress(mail)) {
@@ -57,12 +57,13 @@ public class AccountDataManager {
                     .open();
             return false;
         }
-        account = new Account(mail, password);
+
+        Account account = new Account(mail, password);
         String ret = ServerProxy.createAccount(account, id);
 
         switch (ret) {
             case SUCCESS:
-                startVerification(id);
+                startVerification(id, session);
                 return true;
             case FAILURE:
                 MessageBox.createInfo()
@@ -92,8 +93,8 @@ public class AccountDataManager {
      * @param password password
      * @return true on success false else
      */
-    public static boolean authenticateAccount(String mail, String password) {
-        account = new Account(mail, password);
+    public static boolean authenticateAccount(String mail, String password, VaadinSession session) {
+        Account account = new Account(mail, password);
         String ret = ServerProxy.authenticateUser(account);
 
         switch (ret) {
@@ -113,6 +114,7 @@ public class AccountDataManager {
                         .open();
                 break;
             case SUCCESS:
+                session.setAttribute("account", account);
                 return true;
             default:
                 System.out.println(ret);
@@ -122,7 +124,6 @@ public class AccountDataManager {
                 break;
         }
 
-        account = null;
         return false;
     }
 
@@ -135,9 +136,8 @@ public class AccountDataManager {
      * @param password password
      * @return true on success false else
      */
-    public static boolean changeAccount(String password, String mailNew, String passwordNew) {
-        String ret = "";
-
+    public static boolean changeAccount(String password, String mailNew,
+                                        String passwordNew, VaadinSession session) {
         if (!MailService.isValidEmailAddress(mailNew)) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("noLegitMail"))
@@ -152,13 +152,7 @@ public class AccountDataManager {
             return false;
         }
 
-        if (account == null) {
-            MessageBox.createInfo()
-                    .withMessage(errors.getString("changeFail"))
-                    .open();
-            return false;
-        }
-
+        Account account = (Account) session.getAttribute("account");
         if (!password.equals(account.getPassword())) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("wrongPassword"))
@@ -167,7 +161,8 @@ public class AccountDataManager {
         }
 
         Account newAccount = new Account(mailNew, passwordNew);
-        ret = ServerProxy.changeAccount(account, newAccount);
+        String ret = ServerProxy.changeAccount(account, newAccount);
+        session.setAttribute("account", newAccount);
 
         switch (ret) {
             case WRONGACCOUNT:
@@ -195,15 +190,9 @@ public class AccountDataManager {
      *
      * @return true on success false else
      */
-    public static boolean deleteAccount() {
+    public static boolean deleteAccount(VaadinSession session) {
 
-        if (account == null) {
-            MessageBox.createInfo()
-                    .withMessage(errors.getString("deleteFail"))
-                    .open();
-            return false;
-        }
-
+        Account account = (Account) session.getAttribute("account");
         String ret = ServerProxy.deleteAccount(account);
 
         switch (ret) {
@@ -216,7 +205,6 @@ public class AccountDataManager {
                 MessageBox.createInfo()
                         .withMessage(errors.getString("accountDeleted"))
                         .open();
-                account = null;
                 return true;
             case FAILURE:
             default:
@@ -229,27 +217,20 @@ public class AccountDataManager {
         return false;
     }
 
-    public static Account getAccount() {
-        return account;
-    }
-
-    public static void setAccount(Account account) {
-        AccountDataManager.account = account;
-    }
-
     /**
      * This method starts the verification by creating a link and sending it
      * per mail to the user.
      *
      * @param id the uuid of the account to verify.
      */
-    private static boolean startVerification(UUID id) {
+    private static boolean startVerification(UUID id, VaadinSession session) {
         Boolean ret = true;
 
         String text = messages.getString("mailText");
         String subject = messages.getString("mailSubject");
         String link = HOST + "webservice/verifyAccount?uuid=" + id.toString();
         text += link;
+        Account account = (Account) session.getAttribute("account");
         String to = account.getMail();
         String from = messages.getString("mail");
         try {

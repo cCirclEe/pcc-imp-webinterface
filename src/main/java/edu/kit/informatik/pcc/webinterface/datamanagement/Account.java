@@ -24,6 +24,12 @@ public class Account {
         this.password = password;
     }
 
+    public Account(String json) {
+        JSONObject account = new JSONObject(json);
+        this.mail = account.getString(JSON_KEY_MAIL);
+        this.password = account.getString(JSON_KEY_PASSWORD);
+    }
+
     //getter/setter
     public String getMail() {
         return mail;
