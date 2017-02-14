@@ -63,7 +63,8 @@ public class AccountDataManager {
 
         switch (ret) {
             case SUCCESS:
-                startVerification(id, session);
+                sendVerificationMail(id, session);
+                session.setAttribute("account", account);
                 return true;
             case FAILURE:
                 MessageBox.createInfo()
@@ -205,6 +206,7 @@ public class AccountDataManager {
                 MessageBox.createInfo()
                         .withMessage(errors.getString("accountDeleted"))
                         .open();
+                session.setAttribute("account", null);
                 return true;
             case FAILURE:
             default:
@@ -223,7 +225,7 @@ public class AccountDataManager {
      *
      * @param id the uuid of the account to verify.
      */
-    private static boolean startVerification(UUID id, VaadinSession session) {
+    private static boolean sendVerificationMail(UUID id, VaadinSession session) {
         Boolean ret = true;
 
         String text = messages.getString("mailText");
