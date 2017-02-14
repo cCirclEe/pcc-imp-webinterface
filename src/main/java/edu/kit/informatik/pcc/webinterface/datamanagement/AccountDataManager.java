@@ -63,8 +63,8 @@ public class AccountDataManager {
 
         switch (ret) {
             case SUCCESS:
-                sendVerificationMail(id, session);
                 session.setAttribute("account", account);
+                sendVerificationMail(id, session);
                 return true;
             case FAILURE:
                 MessageBox.createInfo()
