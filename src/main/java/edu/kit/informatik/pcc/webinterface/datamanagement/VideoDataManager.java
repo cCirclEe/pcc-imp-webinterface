@@ -80,35 +80,23 @@ public class VideoDataManager {
                 MessageBox.createInfo()
                         .withMessage(errors.getString("videoDeleteFail"))
                         .open();
-                return;
         }
-
-        updateVideosAndInfo(session);
     }
-
-    /**
-     * This method gives the videos in form of a list
-     *
-     * @return LinkedList of Videos
-     */
-    public static LinkedList<Video> getVideos(VaadinSession session) {
-        updateVideosAndInfo(session);
-        return (LinkedList<Video>) session.getAttribute(MyUI.SESSION_KEY_VIDOES);
-    }
-
-    // Helper Methods
 
     /**
      * This method updates the videos attribute by using methods to fetch
      * the data from the Server and parsing it.
      */
-    private static void updateVideosAndInfo(VaadinSession session) {
+    public static LinkedList<Video> getVideos(VaadinSession session) {
         String videoString = getVideosFromServer(session);
         if (videoString != null) {
-            session.setAttribute(MyUI.SESSION_KEY_VIDOES, createVideoList(videoString));
-            addInfoToVideoList(session);
+            LinkedList<Video> videos = createVideoList(videoString);
+            return addInfoToVideoList(videos, session);
         }
+        return null;
     }
+
+    // Helper Methods
 
     /**
      * This method fetches the videos from the Server via ServerProxy
@@ -161,18 +149,22 @@ public class VideoDataManager {
     /**
      * This method adds the meta-info to every video object in the list.
      */
-    private static void addInfoToVideoList(VaadinSession session) {
+    private static LinkedList<Video> addInfoToVideoList(LinkedList<Video> videos, VaadinSession session) {
+        LinkedList<Video> ret = new LinkedList<>();
 
-        if (session.getAttribute(MyUI.SESSION_KEY_VIDOES) == null) {
+        if (videos == null) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("infoFail"))
                     .open();
+            return null;
         }
 
-        for (Video v : (LinkedList<Video>) session.getAttribute(MyUI.SESSION_KEY_VIDOES)) {
+        for (Video v : videos) {
             String info = getMetaInfFromServer(v.getId(), session);
             v.setInfo(info);
+            ret.add(v);
         }
+        return ret;
     }
 
     /**
@@ -213,7 +205,6 @@ public class VideoDataManager {
      * @return the created string
      */
     private static String parseMetaJSON(String ret) {
-        JSONObject obj = new JSONObject(ret);
         String date;
         double gForceX;
         double gForceY;
@@ -221,6 +212,7 @@ public class VideoDataManager {
         String triggerType;
 
         try {
+            JSONObject obj = new JSONObject(ret);
             date = new SimpleDateFormat("HH:mm:ss.SSS dd.MM.yyyy").format(new Date(obj.getLong("date")));
             triggerType = obj.getString("triggerType");
             gForceX = obj.getDouble("triggerForceX");

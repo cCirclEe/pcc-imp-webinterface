@@ -27,6 +27,7 @@ public class AccountDataManager {
     private static final String WRONGPASSWORD = "WRONG PASSWORD";
     private static final String NOTVERIFIED = "NOT VERIFIED";
     private static final int PASSWORDMIN = 6;
+
     //attributes
     private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
     private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
