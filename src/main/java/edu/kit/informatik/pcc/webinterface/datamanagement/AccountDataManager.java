@@ -141,6 +141,9 @@ public class AccountDataManager {
                                         String passwordNew, VaadinSession session) {
 
         if (passwordNew.length() == 0 && mailNew.length() == 0) {
+            MessageBox.createInfo()
+                    .withMessage(errors.getString("noChanges"))
+                    .open();
             return false;
         }
 
@@ -153,14 +156,14 @@ public class AccountDataManager {
             newAccount = new Account(account.getMail(), passwordNew);
         }
 
-        if (!MailService.isValidEmailAddress(mailNew)) {
+        if (!MailService.isValidEmailAddress(newAccount.getMail())) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("noLegitMail"))
                     .open();
             return false;
         }
 
-        if (passwordNew.length() < PASSWORDMIN) {
+        if (newAccount.getPassword().length() < PASSWORDMIN) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("toShortPassword"))
                     .open();
