@@ -3,6 +3,7 @@ package edu.kit.informatik.pcc.webinterface.datamanagement;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.VaadinSession;
 import de.steinwedel.messagebox.MessageBox;
+import edu.kit.informatik.pcc.webinterface.gui.MyUI;
 import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +28,6 @@ public class VideoDataManager {
     private static final String WRONGACCOUNT = "WRONG ACCOUNT";
 
     //attributes
-    private static LinkedList<Video> videos = null;
     private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
 
     /**
@@ -40,7 +40,7 @@ public class VideoDataManager {
      */
     public static StreamResource createDownloadFileProxy(int videoID, String videoName, VaadinSession session) {
         return new StreamResource((StreamResource.StreamSource) () -> {
-            Account account = (Account) session.getAttribute("account");
+            Account account = (Account) session.getAttribute(MyUI.SESSION_KEY_ACCOUNT);
 
             InputStream stream = ServerProxy.videoDownload(videoID, account);
 
@@ -60,7 +60,7 @@ public class VideoDataManager {
      * @param videoID the id of the video to delete
      */
     public static void deleteVideo(int videoID, VaadinSession session) {
-        Account account = (Account) session.getAttribute("account");
+        Account account = (Account) session.getAttribute(MyUI.SESSION_KEY_ACCOUNT);
 
         String ret = ServerProxy.videoDelete(videoID, account);
 
@@ -87,32 +87,28 @@ public class VideoDataManager {
     }
 
     /**
-     * This method updates the videos attribute by using methods to fetch
-     * the data from the Server and parsing it.
-     */
-    public static void updateVideosAndInfo(VaadinSession session) {
-        String videoString = getVideosFromServer(session);
-        if (videoString != null) {
-            videos = createVideoList(videoString);
-            addInfoToVideoList(session);
-        }
-    }
-
-    /**
      * This method gives the videos in form of a list
      *
      * @return LinkedList of Videos
      */
     public static LinkedList<Video> getVideos(VaadinSession session) {
         updateVideosAndInfo(session);
-        return videos;
-    }
-
-    public static void removeVideos() {
-        VideoDataManager.videos = null;
+        return (LinkedList<Video>) session.getAttribute(MyUI.SESSION_KEY_VIDOES);
     }
 
     // Helper Methods
+
+    /**
+     * This method updates the videos attribute by using methods to fetch
+     * the data from the Server and parsing it.
+     */
+    private static void updateVideosAndInfo(VaadinSession session) {
+        String videoString = getVideosFromServer(session);
+        if (videoString != null) {
+            session.setAttribute(MyUI.SESSION_KEY_VIDOES, createVideoList(videoString));
+            addInfoToVideoList(session);
+        }
+    }
 
     /**
      * This method fetches the videos from the Server via ServerProxy
@@ -120,7 +116,7 @@ public class VideoDataManager {
      * @return the videos as json string
      */
     private static String getVideosFromServer(VaadinSession session) {
-        Account account = (Account) session.getAttribute("account");
+        Account account = (Account) session.getAttribute(MyUI.SESSION_KEY_ACCOUNT);
         String ret = ServerProxy.getVideos(account);
 
         switch (ret) {
@@ -167,13 +163,13 @@ public class VideoDataManager {
      */
     private static void addInfoToVideoList(VaadinSession session) {
 
-        if (videos == null) {
+        if (session.getAttribute(MyUI.SESSION_KEY_VIDOES) == null) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("infoFail"))
                     .open();
         }
 
-        for (Video v : videos) {
+        for (Video v : (LinkedList<Video>) session.getAttribute(MyUI.SESSION_KEY_VIDOES)) {
             String info = getMetaInfFromServer(v.getId(), session);
             v.setInfo(info);
         }
@@ -186,7 +182,7 @@ public class VideoDataManager {
      * @return the metainfo as string
      */
     private static String getMetaInfFromServer(int videoID, VaadinSession session) {
-        Account account = (Account) session.getAttribute("account");
+        Account account = (Account) session.getAttribute(MyUI.SESSION_KEY_ACCOUNT);
         String response = ServerProxy.videoInfo(videoID, account);
 
         String ret;

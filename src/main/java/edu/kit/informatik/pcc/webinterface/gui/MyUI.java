@@ -9,7 +9,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
-import edu.kit.informatik.pcc.webinterface.datamanagement.VideoDataManager;
 import edu.kit.informatik.pcc.webinterface.gui.navigation.Menu;
 
 import javax.servlet.annotation.WebServlet;
@@ -24,6 +23,9 @@ import java.util.ResourceBundle;
  */
 @Theme("valo")
 public class MyUI extends UI {
+
+    public static final String SESSION_KEY_ACCOUNT = "account";
+    public static final String SESSION_KEY_VIDOES = "vidoes";
 
     private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
     //attributes
@@ -54,7 +56,6 @@ public class MyUI extends UI {
         menuArea = new VerticalLayout();
         contentArea = new VerticalLayout();
 
-        VideoDataManager.removeVideos();
         LoginView login = new LoginView(this);
 
         background.addComponent(login);
@@ -92,7 +93,7 @@ public class MyUI extends UI {
         //menuArea.setWidth(200, Unit.PIXELS);
         menuArea.setHeight(100, Unit.PERCENTAGE);
 
-        Account account = (Account) getSession().getAttribute("account");
+        Account account = (Account) getSession().getAttribute(SESSION_KEY_ACCOUNT);
 
         menu.addUserMenu(account.getMail());
         menu.setSizeUndefined();
