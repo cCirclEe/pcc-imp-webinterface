@@ -139,6 +139,20 @@ public class AccountDataManager {
      */
     public static boolean changeAccount(String password, String mailNew,
                                         String passwordNew, VaadinSession session) {
+
+        if (passwordNew.length() == 0 && mailNew.length() == 0) {
+            return false;
+        }
+
+        Account account = (Account) session.getAttribute("account");
+        Account newAccount = new Account(mailNew, passwordNew);
+
+        if (passwordNew.length() == 0) {
+            newAccount = new Account(mailNew, account.getPassword());
+        } else if (mailNew.length() == 0) {
+            newAccount = new Account(account.getMail(), passwordNew);
+        }
+
         if (!MailService.isValidEmailAddress(mailNew)) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("noLegitMail"))
@@ -153,7 +167,6 @@ public class AccountDataManager {
             return false;
         }
 
-        Account account = (Account) session.getAttribute("account");
         if (!password.equals(account.getPassword())) {
             MessageBox.createInfo()
                     .withMessage(errors.getString("wrongPassword"))
@@ -161,7 +174,7 @@ public class AccountDataManager {
             return false;
         }
 
-        Account newAccount = new Account(mailNew, passwordNew);
+
         String ret = ServerProxy.changeAccount(account, newAccount);
         session.setAttribute("account", newAccount);
 
