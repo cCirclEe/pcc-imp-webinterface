@@ -22,8 +22,8 @@ import java.util.UUID;
  */
 public class ServerProxy {
 
-    public static final String HOST = "http://laubenstone.de:2222/";
-    //public static final String HOST = "http://localhost:2222/";
+    //public static final String HOST = "http://laubenstone.de:2222/";
+    public static final String HOST = "http://localhost:2222/";
 
     //status strings
     //TODO: Change to server connection failure -> handle
@@ -174,11 +174,14 @@ public class ServerProxy {
     private static Response post(Form f, String path) {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(HOST).path("webservice").path(path);
+        Response response;
         try {
-            return webTarget.request().post(
+            response = webTarget.request().post(
                     Entity.entity(f, MediaType.APPLICATION_FORM_URLENCODED_TYPE), Response.class);
         } catch (ProcessingException e) {
-            return null;
+            response = null;
         }
+        client.close();
+        return response;
     }
 }
