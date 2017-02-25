@@ -51,7 +51,7 @@ public class VideoDataManager {
                 return null;
             }
             return stream;
-        }, videoName + Video.EXTENTION);
+        }, videoName + Video.EXTENSION);
     }
 
     /**
