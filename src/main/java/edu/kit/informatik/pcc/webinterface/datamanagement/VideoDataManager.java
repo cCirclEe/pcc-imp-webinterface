@@ -210,16 +210,23 @@ public class VideoDataManager {
         double gForceY;
         double gForceZ;
         String triggerType;
+        String editingDate = null;
 
         try {
             JSONObject obj = new JSONObject(ret);
-            date = new SimpleDateFormat("HH:mm:ss.SSS dd.MM.yyyy").format(new Date(obj.getLong("date")));
+            date = new SimpleDateFormat("HH:mm:ss.SSS dd.MM.yyyy")
+                    .format(new Date(obj.getLong("date")));
             triggerType = obj.getString("triggerType");
             gForceX = obj.getDouble("triggerForceX");
             gForceY = obj.getDouble("triggerForceY");
             gForceZ = obj.getDouble("triggerForceZ");
+
+            if (obj.has("editingDate")) {
+                editingDate = new SimpleDateFormat("HH:mm:ss.SSS dd.MM.yyyy")
+                        .format(new Date(obj.getLong("editingDate")));
+            }
         } catch (JSONException e) {
-            return "";
+            return errors.getString("metadataFail");
         }
 
         final StringBuilder builder = new StringBuilder();
@@ -228,6 +235,10 @@ public class VideoDataManager {
         builder.append("G-Force (X): ").append(gForceX).append("\n");
         builder.append("G-Force (Y): ").append(gForceY).append("\n");
         builder.append("G-Force (Z): ").append(gForceZ);
+        if (editingDate != null) {
+            builder.append("\n").append("Editing Date: ").append(editingDate);
+        }
+
         return builder.toString();
     }
 
