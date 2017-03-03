@@ -1,0 +1,65 @@
+import edu.kit.informatik.pcc.webinterface.datamanagement.Account;
+import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+
+/**
+ * Created by chris on 03.03.2017.
+ */
+public class ServerProxyTest {
+    private final String MAIL = "mail";
+    private final String PASSWORD = "password";
+    private final int VIDEOID = 1;
+    private final String FAILURE = "FAILURE";
+    private final String WRONGACCOUNT = "WRONG ACCOUNT";
+    private final String NOTEXISTING = "NOT EXISTING";
+    private Account account;
+    private UUID uuid;
+
+    @Before
+    public void setUp() {
+        account = new Account(MAIL, PASSWORD);
+        uuid = UUID.randomUUID();
+    }
+
+    // Tests with a wrong Account
+    @Test
+    public void getVideosWrongAccountTest() {
+        assertEquals(ServerProxy.getVideos(account), WRONGACCOUNT);
+    }
+
+    @Test
+    public void videoInfoWrongAccountTest() {
+        assertEquals(ServerProxy.videoInfo(VIDEOID, account), WRONGACCOUNT);
+    }
+
+    @Test
+    public void videoDeleteWrongAccountTest() {
+        assertEquals(ServerProxy.videoDelete(VIDEOID, account), WRONGACCOUNT);
+    }
+
+    @Test
+    public void authenticateWrongAccountTest() {
+        assertEquals(ServerProxy.authenticateUser(account), NOTEXISTING);
+    }
+
+    @Test
+    public void createAccountFailTest() {
+        assertEquals(ServerProxy.createAccount(account, uuid), FAILURE);
+    }
+
+    @Test
+    public void changeAccountWrongAccountTest() {
+        assertEquals(ServerProxy.changeAccount(account, account), WRONGACCOUNT);
+    }
+
+    @Test
+    public void deleteAccountWrongAccountTest() {
+        assertEquals(ServerProxy.deleteAccount(account), WRONGACCOUNT);
+    }
+
+}
