@@ -230,7 +230,7 @@ public class VideoDataManager {
         }
 
         final StringBuilder builder = new StringBuilder();
-        builder.append("Date: ").append(date).append("\n");
+        builder.append("Recording Date: ").append(date).append("\n");
         builder.append("Trigger type: ").append(triggerType).append("\n");
         builder.append("G-Force (X): ").append(gForceX).append("\n");
         builder.append("G-Force (Y): ").append(gForceY).append("\n");

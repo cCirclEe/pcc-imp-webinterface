@@ -27,12 +27,12 @@ public class AccountDataManagerTest {
     public void setUp() {
         messageBoxStub = new MessageBoxStub();
         sessionStub = new SessionStub(null);
+        PowerMockito.mockStatic(MessageBox.class);
+        when(MessageBox.createInfo()).thenReturn(messageBoxStub);
     }
 
     @Test
     public void createAccountTest() {
-        PowerMockito.mockStatic(MessageBox.class);
-        when(MessageBox.createInfo()).thenReturn(messageBoxStub);
         // Mail check
         assertEquals(AccountDataManager.createAccount(NOTVALIDMAIL, PASSWORD, sessionStub), false);
         // Password check
@@ -41,8 +41,6 @@ public class AccountDataManagerTest {
 
     @Test
     public void changeAccountTest() {
-        PowerMockito.mockStatic(MessageBox.class);
-        when(MessageBox.createInfo()).thenReturn(messageBoxStub);
         // when empty
         assertEquals(AccountDataManager.changeAccount(PASSWORD, "", "", sessionStub), false);
         // when no valid mail
