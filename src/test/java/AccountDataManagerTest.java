@@ -11,15 +11,18 @@ import static org.junit.Assert.assertEquals;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
+ * Tests the AccountManager functionality
+ *
+ * @author Christoph Hörtnagl
  * Created by chris on 03.03.2017.
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MessageBox.class})
 public class AccountDataManagerTest {
-    public final String VALIDMAIL = "mail@mail.mail";
-    public final String NOTVALIDMAIL = "mail";
-    public final String PASSWORD = "password";
-    public final String SHORTPASSWORD = "123";
+    private final String VALIDMAIL = "mail@mail.mail";
+    private final String NOTVALIDMAIL = "mail";
+    private final String PASSWORD = "password";
+    private final String SHORTPASSWORD = "123";
     private MessageBoxStub messageBoxStub;
     private SessionStub sessionStub;
 
@@ -33,9 +36,9 @@ public class AccountDataManagerTest {
 
     @Test
     public void createAccountTest() {
-        // Mail check
+        // tries with invalid mail
         assertEquals(AccountDataManager.createAccount(NOTVALIDMAIL, PASSWORD, sessionStub), false);
-        // Password check
+        // tries with invalid password
         assertEquals(AccountDataManager.createAccount(VALIDMAIL, SHORTPASSWORD, sessionStub), false);
     }
 

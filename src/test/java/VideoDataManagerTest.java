@@ -6,6 +6,7 @@ import edu.kit.informatik.pcc.webinterface.serverconnection.ServerProxy;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,9 @@ import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
+ * Tests the VideoDataManager functionality
+ *
+ * @author Christop Hörtnagl
  * Created by chris on 03.03.2017.
  */
 @RunWith(PowerMockRunner.class)
@@ -37,7 +41,7 @@ public class VideoDataManagerTest {
     private final static String JSON_KEY_TRIGGER_FORCE_X = "triggerForceX";
     private final static String JSON_KEY_TRIGGER_FORCE_Y = "triggerForceY";
     private final static String JSON_KEY_TRIGGER_FORCE_Z = "triggerForceZ";
-    JSONObject meta;
+    private JSONObject meta;
     private SessionStub sessionStub;
     private JSONObject video1;
     private JSONObject video2;
@@ -107,7 +111,7 @@ public class VideoDataManagerTest {
             json.put(JSON_KEY_NAME, videoName);
             json.put(JSON_KEY_ID, videoId);
         } catch (JSONException e) {
-
+            Assert.fail();
         }
         return json.toString();
     }
@@ -120,9 +124,8 @@ public class VideoDataManagerTest {
             json.put(JSON_KEY_TRIGGER_FORCE_X, gForce[0]);
             json.put(JSON_KEY_TRIGGER_FORCE_Y, gForce[1]);
             json.put(JSON_KEY_TRIGGER_FORCE_Z, gForce[2]);
-
         } catch (JSONException e) {
-
+            Assert.fail();
         }
         return json.toString();
     }

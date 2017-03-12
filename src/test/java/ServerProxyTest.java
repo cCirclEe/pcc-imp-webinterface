@@ -8,6 +8,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * @author Christoph Hörtnagl
  * Created by chris on 03.03.2017.
  */
 public class ServerProxyTest {
