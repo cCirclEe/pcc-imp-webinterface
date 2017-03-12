@@ -15,19 +15,41 @@ public class Account {
     private static final String JSON_KEY_PASSWORD = "password";
 
     //attributes
+
+    /**
+     * The users E-mail address
+     */
     private String mail;
+    /**
+     * The users password
+     */
     private String password;
 
     //constructors
+
+    /**
+     * Creates a new account with the given parameters.
+     *
+     * @param mail     E-mail address of the user
+     * @param password Password of the user
+     */
     public Account(String mail, String password) {
         this.mail = mail;
         this.password = password;
     }
 
+    /**
+     * Creates a new account from a json string.
+     * @param json Json string containing account data
+     */
     public Account(String json) {
-        JSONObject account = new JSONObject(json);
-        this.mail = account.getString(JSON_KEY_MAIL);
-        this.password = account.getString(JSON_KEY_PASSWORD);
+        try {
+            JSONObject account = new JSONObject(json);
+            this.mail = account.getString(JSON_KEY_MAIL);
+            this.password = account.getString(JSON_KEY_PASSWORD);
+        } catch (JSONException e) {
+            throw new IllegalArgumentException();
+        }
     }
 
     //getter/setter

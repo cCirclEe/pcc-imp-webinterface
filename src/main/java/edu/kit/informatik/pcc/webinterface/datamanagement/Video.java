@@ -11,11 +11,28 @@ public class Video {
     public static final String EXTENSION = ".mp4";
 
     //attributes
+
+    /**
+     * Name of the video
+     */
     private String name;
+    /**
+     * Database id of the video
+     */
     private int id;
+    /**
+     * Video metadata
+     */
     private String info;
 
     //constructors
+
+    /**
+     * Creates a new video object with the given name and id.
+     *
+     * @param name Name of the video
+     * @param id
+     */
     public Video(String name, int id) {
         this(name, id, "");
     }

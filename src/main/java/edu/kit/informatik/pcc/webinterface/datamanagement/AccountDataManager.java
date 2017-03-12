@@ -18,6 +18,7 @@ import java.util.UUID;
  */
 public class AccountDataManager {
 
+    // Constants for returns strings
     private static final String HOST = "http://laubenstone.de:2222/";
     private static final String SUCCESS = "SUCCESS";
     private static final String FAILURE = "FAILURE";
@@ -29,6 +30,8 @@ public class AccountDataManager {
     private static final int PASSWORDMIN = 6;
 
     //attributes
+
+    // message bundles
     private static ResourceBundle errors = ResourceBundle.getBundle("ErrorMessages");
     private static ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
 

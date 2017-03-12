@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 public class ImpressumView extends VerticalLayout implements View {
 
     public static final String viewID = "ImpressumView";
-    ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
+    private ResourceBundle messages = ResourceBundle.getBundle("MessageBundle");
 
     public ImpressumView() {
         this.setSpacing(true);
