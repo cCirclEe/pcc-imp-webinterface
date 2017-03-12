@@ -19,6 +19,11 @@ public class MailServiceTest {
         assertEquals(MailService.isValidEmailAddress(NOTVALIDMAIL), false);
     }
 
+    @Test
+    public void isValidMailFailTest() {
+        assertEquals(MailService.isValidEmailAddress(NOTVALIDMAIL), false);
+    }
+
     @Test(expected = EmailException.class)
     public void sendMailFailTest() throws IOException, EmailException {
         MailService.send(VALIDMAIL, NOTVALIDMAIL, "hallo", "abc");
